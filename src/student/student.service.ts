@@ -51,7 +51,7 @@ export class StudentService {
       (await bcrypt.compare(password, student.password))
     ) {
       return this.sanitizeStudent(student);
-    } else throw new ExceptionBadRequest(FAILED_LOGIN);
+    }
   }
 
   // updateProfile(_id, studentNames: UpdateProfileAuthDto) {

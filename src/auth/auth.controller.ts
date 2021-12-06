@@ -9,11 +9,15 @@ import {
 import { StaffService } from "src/staff/staff.service";
 import { InstructorService } from "src/instructor/instructor.service";
 import { StudentService } from "src/student/student.service";
-import { ExceptionAlreadyExist } from "src/utilities/exceptions";
+import {
+  ExceptionAlreadyExist,
+  ExceptionBadRequest,
+} from "src/utilities/exceptions";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
 import {
+  FAILED_LOGIN,
   INSTRUCTOR_ALREADY_EXIST,
   INSTRUCTOR_DOES_NOT_EXIST,
 } from "src/utilities/errors";
@@ -57,15 +61,24 @@ export class AuthController {
     return await this.studentService.createOrUpdate(studentDto, _id);
   }
 
-  @Post("login/instructor")
-  async loginInstructor(@Body() instructorDto: LoginDto) {
-    const instructor = await this.instructorService.findByLogin(instructorDto);
+  @Post("login")
+  async loginInstructor(@Body() loginDto: LoginDto) {
+    const instructor = await this.instructorService.findByLogin(loginDto);
+    const student = await this.studentService.findByLogin(loginDto);
 
-    const token = this.authService.generateInstructorToken(
-      instructor._id,
-      instructor.phone
-    );
-    return { instructor, token };
+    if (instructor) {
+      const token = this.authService.generateInstructorToken(
+        instructor._id,
+        instructor.phone
+      );
+      return { instructor, token };
+    } else if (student) {
+      const token = this.authService.generateStudentToken(
+        student._id,
+        student.phone
+      );
+      return { student, token };
+    } else throw new ExceptionBadRequest(FAILED_LOGIN);
   }
 
   @Post("login/student")

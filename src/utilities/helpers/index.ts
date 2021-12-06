@@ -6,5 +6,5 @@ export const convertSelectsForAggregate = (selects: string) =>
 export const capitalizeFirstLetter = (sentence: string) =>
   sentence
     .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");

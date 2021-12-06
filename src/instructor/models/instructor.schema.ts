@@ -1,5 +1,6 @@
 import * as bcrypt from "bcryptjs";
 import * as mongoose from "mongoose";
+import { capitalizeFirstLetter } from "src/utilities/helpers";
 
 export const InstructorSchema = new mongoose.Schema(
   {
@@ -7,11 +8,13 @@ export const InstructorSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: "",
+      set: capitalizeFirstLetter,
     },
     lastName: {
       type: String,
       trim: true,
       default: "",
+      set: capitalizeFirstLetter,
     },
     phone: {
       type: String,

@@ -28,9 +28,9 @@ export class InstructorService {
   }
 
   async findByLogin(instructorDto) {
-    const { email, password } = instructorDto;
+    const { phone, password } = instructorDto;
     const instructor = await this.instructorModel
-      .findOne({ email })
+      .findOne({ phone })
       .select(InstructorSelects.withPassword);
 
     if (
@@ -38,7 +38,7 @@ export class InstructorService {
       (await bcrypt.compare(password, instructor.password))
     ) {
       return this.sanitizeInstructor(instructor);
-    } else throw new ExceptionBadRequest(FAILED_LOGIN);
+    }
   }
 
   // updateProfile(_id, instructorNames: UpdateProfileAuthDto) {

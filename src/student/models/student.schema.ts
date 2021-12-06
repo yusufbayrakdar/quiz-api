@@ -1,6 +1,7 @@
 import * as bcrypt from "bcryptjs";
 import * as mongoose from "mongoose";
 import * as generator from "generate-password";
+import { capitalizeFirstLetter } from "src/utilities/helpers";
 
 const passwordInit = generator.generate({
   length: 4,
@@ -14,11 +15,13 @@ export const StudentSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: "",
+      set: capitalizeFirstLetter,
     },
     lastName: {
       type: String,
       trim: true,
       default: "",
+      set: capitalizeFirstLetter,
     },
     phone: {
       type: String,
