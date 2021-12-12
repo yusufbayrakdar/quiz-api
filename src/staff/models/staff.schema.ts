@@ -7,21 +7,7 @@ export const StaffSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    firstName: {
-      type: String,
-      trim: true,
-      default: "",
-    },
-    lastName: {
-      type: String,
-      trim: true,
-      default: "",
-    },
-    phone: {
-      type: String,
-      trim: true,
-      unique: true,
-    },
+    nickname: String,
 
     password: { type: String, set: toHashPassword, select: false },
 

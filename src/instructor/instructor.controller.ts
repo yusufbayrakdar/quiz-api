@@ -1,11 +1,18 @@
-import { Controller, Get, Param, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, Query, UseGuards } from "@nestjs/common";
 import { User } from "src/utilities/decorators/user.decorator";
 import { UserGuard } from "src/utilities/guards/user.guard";
+import { PaginationQueryDto } from "src/utilities/helpers/pagination/pagination.validation";
 import { InstructorService } from "./instructor.service";
 
 @Controller("instructors")
 export class InstructorController {
   constructor(private readonly instructorService: InstructorService) {}
+
+  @Get()
+  async list(@Query() query: PaginationQueryDto) {
+    console.log("🤯 query", query);
+    return await this.instructorService.list(query);
+  }
 
   @Get(":_id/confirm")
   async confirm(@Param("_id") instructorId: string) {

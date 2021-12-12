@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import * as mongoosePaginate from "mongoose-paginate-v2";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -17,6 +18,10 @@ const database =
       useNewUrlParser: true,
       autoIndex: false,
       useUnifiedTopology: true,
+      connectionFactory: (connection) => {
+        connection.plugin(mongoosePaginate);
+        return connection;
+      },
     }),
     AuthModule,
     QuizModule,

@@ -3,9 +3,8 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import * as bcrypt from "bcryptjs";
 
-import { ExceptionBadRequest } from "src/utilities/exceptions";
 import { Instructor, InstructorSelects } from "./entities/instructor.entity";
-import { FAILED_LOGIN } from "src/utilities/errors";
+import paginationHelper from "src/utilities/helpers/pagination/pagination.helper";
 
 @Injectable()
 export class InstructorService {
@@ -16,6 +15,14 @@ export class InstructorService {
   async create(instructor) {
     const createdInstructor = await this.instructorModel.create(instructor);
     return this.sanitizeInstructor(createdInstructor);
+  }
+
+  list(query) {
+    return paginationHelper({
+      Model: this.instructorModel,
+      query,
+      searchableFields: ["firstName", "lastName", "phone"],
+    });
   }
 
   checkPhone = (phone: string) => this.instructorModel.exists({ phone });
@@ -57,6 +64,7 @@ export class InstructorService {
     });
   }
 
-  getProfile = (_id) =>
-    this.instructorModel.findById(_id).select(InstructorSelects.basic);
+  getProfile(_id) {
+    return this.instructorModel.findById(_id).select(InstructorSelects.basic);
+  }
 }

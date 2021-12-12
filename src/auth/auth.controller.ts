@@ -24,6 +24,7 @@ import {
 import { UserGuard } from "src/utilities/guards/user.guard";
 import { StudentDto } from "src/student/dto/student.dto";
 import { User } from "src/utilities/decorators/user.decorator";
+import { LoginStaffDto } from "./dto/login-staff.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -92,13 +93,13 @@ export class AuthController {
     return { instructor, token };
   }
 
-  @Post("login/staff")
-  async loginStaff(@Body() instructorDto: LoginDto) {
+  @Post("login-staff")
+  async loginStaff(@Body() instructorDto: LoginStaffDto) {
     const instructor = await this.staffService.findByLogin(instructorDto);
 
     const tokenstaff = this.authService.generateTokenStaff(
       instructor._id,
-      instructor.phone
+      instructor.nickname
     );
     return { instructor, tokenstaff };
   }

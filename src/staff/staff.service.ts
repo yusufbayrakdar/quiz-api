@@ -11,9 +11,9 @@ export class StaffService {
   constructor(@InjectModel("Staff") private staffModel: Model<Staff>) {}
 
   async findByLogin(staffDto) {
-    const { phone, password } = staffDto;
+    const { nickname, password } = staffDto;
     const staff = await this.staffModel.findOneAndUpdate(
-      { phone },
+      { nickname },
       { lastLoginDate: new Date() },
       {
         fields: convertSelectsForAggregate(StaffSelects.basic),
@@ -36,5 +36,9 @@ export class StaffService {
     const sanitized = staff.toObject();
     delete sanitized["password"];
     return sanitized;
+  }
+
+  getProfile(_id) {
+    return this.staffModel.findById(_id).select(StaffSelects.basic);
   }
 }
