@@ -10,8 +10,12 @@ export class InstructorController {
 
   @Get()
   async list(@Query() query: PaginationQueryDto) {
-    console.log("🤯 query", query);
     return await this.instructorService.list(query);
+  }
+
+  @Get(":_id")
+  async detail(@Param("_id") instructorId: string) {
+    return await this.instructorService.detail(instructorId);
   }
 
   @Get(":_id/confirm")

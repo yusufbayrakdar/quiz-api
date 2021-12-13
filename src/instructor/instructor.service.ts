@@ -22,7 +22,12 @@ export class InstructorService {
       Model: this.instructorModel,
       query,
       searchableFields: ["firstName", "lastName", "phone"],
+      filterableFields: ["_id", "confirmed", "isActive"],
     });
+  }
+
+  detail(_id) {
+    return this.instructorModel.findById(_id).select(InstructorSelects.basic);
   }
 
   checkPhone = (phone: string) => this.instructorModel.exists({ phone });

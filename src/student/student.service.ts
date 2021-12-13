@@ -2,11 +2,14 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import * as bcrypt from "bcryptjs";
+import * as mongoose from "mongoose";
 
 import { ExceptionBadRequest } from "src/utilities/exceptions";
 import { Student, StudentSelects } from "./entities/student.entity";
 import { StudentInstructor } from "./entities/student-instructor.entity";
 import { FAILED_LOGIN } from "src/utilities/errors";
+import paginationHelper from "src/utilities/helpers/pagination/pagination.helper";
+import { PaginationQueryDto } from "src/utilities/helpers/pagination/pagination.validation";
 
 @Injectable()
 export class StudentService {
@@ -29,6 +32,33 @@ export class StudentService {
       { upsert: true, setDefaultsOnInsert: true }
     );
     return this.sanitizeStudent(newStudent);
+  }
+
+  list(query) {
+    return paginationHelper({
+      Model: this.studentModel,
+      query,
+      searchableFields: ["firstName", "lastName", "phone"],
+      filterableFields: ["_id"],
+    });
+  }
+
+  studentsOfInstructor(query) {
+    // TODO: add pagination manually
+    // return this.studentInstructorModel.paginate(query);
+    query.instructor = new mongoose.Types.ObjectId(query.instructor);
+    return paginationHelper({
+      Model: this.studentInstructorModel,
+      query,
+      searchableFields: ["firstName", "lastName", "phone"],
+      filterableFields: ["instructor"],
+      populate: [
+        {
+          path: "student",
+          select: StudentSelects.basic,
+        },
+      ],
+    });
   }
 
   checkPhone = (phone: string) => this.studentModel.exists({ phone });
