@@ -16,6 +16,9 @@ import {
 
 export class PaginationQueryDto {
   @IsOptional()
+  _id?: any;
+
+  @IsOptional()
   @Type(() => Number)
   @Min(1)
   page: number;

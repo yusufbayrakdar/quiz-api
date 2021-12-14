@@ -4,8 +4,8 @@ import { ValidationPipe } from "@nestjs/common";
 import * as Express from "express";
 import * as cors from "cors";
 import "dotenv/config";
-import { TransformInterceptor } from "./shared/response.interceptor";
 
+import { TransformInterceptor } from "./shared/response.interceptor";
 import { AppModule } from "./app.module";
 import { loggerMiddleware } from "./utilities/logger";
 import { SwaggerSetup } from "./utilities/swagger-setup";

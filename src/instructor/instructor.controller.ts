@@ -27,6 +27,13 @@ export class InstructorController {
     return { confirmed };
   }
 
+  @Get(":_id/cancel")
+  async cancel(@Param("_id") instructorId: string) {
+    const canceled = Boolean(await this.instructorService.cancel(instructorId));
+
+    return { canceled };
+  }
+
   @Get("profile")
   @UseGuards(UserGuard)
   async profile(@User("_id") instructorId: string) {

@@ -43,21 +43,18 @@ export class StudentService {
     });
   }
 
-  studentsOfInstructor(query) {
-    // TODO: add pagination manually
-    // return this.studentInstructorModel.paginate(query);
-    query.instructor = new mongoose.Types.ObjectId(query.instructor);
+  async studentsOfInstructor(query) {
+    const studentIds = await this.studentInstructorModel
+      .find({ instructor: query.instructor })
+      .distinct("student");
+
+    query._id = { $in: studentIds };
+
     return paginationHelper({
-      Model: this.studentInstructorModel,
+      Model: this.studentModel,
       query,
       searchableFields: ["firstName", "lastName", "phone"],
-      filterableFields: ["instructor"],
-      populate: [
-        {
-          path: "student",
-          select: StudentSelects.basic,
-        },
-      ],
+      filterableFields: ["_id"],
     });
   }
 

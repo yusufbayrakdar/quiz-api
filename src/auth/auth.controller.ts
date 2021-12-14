@@ -82,25 +82,14 @@ export class AuthController {
     } else throw new ExceptionBadRequest(FAILED_LOGIN);
   }
 
-  @Post("login/student")
-  async loginStudent(@Body() instructorDto: LoginDto) {
-    const instructor = await this.studentService.findByLogin(instructorDto);
-
-    const token = this.authService.generateStudentToken(
-      instructor._id,
-      instructor.phone
-    );
-    return { instructor, token };
-  }
-
   @Post("login-staff")
   async loginStaff(@Body() instructorDto: LoginStaffDto) {
-    const instructor = await this.staffService.findByLogin(instructorDto);
+    const staff = await this.staffService.findByLogin(instructorDto);
 
     const tokenstaff = this.authService.generateTokenStaff(
-      instructor._id,
-      instructor.nickname
+      staff._id,
+      staff.nickname
     );
-    return { instructor, tokenstaff };
+    return { staff, tokenstaff };
   }
 }

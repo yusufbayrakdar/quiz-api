@@ -69,6 +69,12 @@ export class InstructorService {
     });
   }
 
+  cancel(_id: string) {
+    return this.instructorModel.findByIdAndUpdate(_id, {
+      confirmed: false,
+    });
+  }
+
   getProfile(_id) {
     return this.instructorModel.findById(_id).select(InstructorSelects.basic);
   }
