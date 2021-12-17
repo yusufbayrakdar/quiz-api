@@ -51,6 +51,14 @@ export class PaginationQueryDto {
   @IsOptional()
   @IsBooleanString()
   isActive: boolean;
+
+  @IsOptional()
+  @IsBooleanString()
+  hasPhone: boolean;
+
+  @IsOptional()
+  @IsBooleanString()
+  confirmed: boolean;
 }
 
 export class Pagination {

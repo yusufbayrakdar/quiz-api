@@ -35,8 +35,16 @@ export class StudentService {
   }
 
   list(query) {
+    const { hasPhone } = query;
+    const customFilters: any = {};
+    if (hasPhone === "true") {
+      customFilters.phone = { $ne: null };
+    } else if (hasPhone === "false") {
+      customFilters.phone = null;
+    }
     return paginationHelper({
       Model: this.studentModel,
+      customFilters,
       query,
       searchableFields: ["firstName", "lastName", "phone"],
       filterableFields: ["_id"],

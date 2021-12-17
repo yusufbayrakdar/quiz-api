@@ -22,7 +22,7 @@ export class InstructorService {
       Model: this.instructorModel,
       query,
       searchableFields: ["firstName", "lastName", "phone"],
-      filterableFields: ["_id", "confirmed", "isActive"],
+      filterableFields: ["_id", "confirmed"],
     });
   }
 
