@@ -86,10 +86,10 @@ export class StudentService {
       .findOne({ nickname })
       .select(StudentSelects.withPassword);
 
-    if (
-      student?.password &&
-      (await bcrypt.compare(password, student.password))
-    ) {
+    const isValid = student?.password
+      ? await bcrypt.compare(password, student.password)
+      : student?.passwordInit === password;
+    if (isValid) {
       return this.sanitizeStudent(student);
     }
   }

@@ -11,5 +11,5 @@ export class Student extends Document {
 
 export const StudentSelects = {
   basic: "firstName lastName phone nickname",
-  withPassword: "firstName lastName phone nickname password",
+  withPassword: "firstName lastName phone nickname password passwordInit",
 };
