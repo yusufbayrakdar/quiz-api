@@ -2,14 +2,10 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import * as bcrypt from "bcryptjs";
-import * as mongoose from "mongoose";
 
-import { ExceptionBadRequest } from "src/utilities/exceptions";
 import { Student, StudentSelects } from "./entities/student.entity";
 import { StudentInstructor } from "./entities/student-instructor.entity";
-import { FAILED_LOGIN } from "src/utilities/errors";
 import paginationHelper from "src/utilities/helpers/pagination/pagination.helper";
-import { PaginationQueryDto } from "src/utilities/helpers/pagination/pagination.validation";
 
 @Injectable()
 export class StudentService {
@@ -44,8 +40,8 @@ export class StudentService {
     }
     return paginationHelper({
       Model: this.studentModel,
-      customFilters,
       query,
+      customFilters,
       searchableFields: ["firstName", "lastName", "phone"],
       filterableFields: ["_id"],
     });
@@ -58,10 +54,19 @@ export class StudentService {
 
     query._id = { $in: studentIds };
 
+    const { hasPhone } = query;
+    const customFilters: any = {};
+    if (hasPhone === "true") {
+      customFilters.phone = { $ne: null };
+    } else if (hasPhone === "false") {
+      customFilters.phone = null;
+    }
+
     return paginationHelper({
       Model: this.studentModel,
       query,
-      searchableFields: ["firstName", "lastName", "phone"],
+      customFilters,
+      searchableFields: ["firstName", "lastName", "nickname", "phone"],
       filterableFields: ["_id"],
     });
   }
@@ -76,9 +81,9 @@ export class StudentService {
   }
 
   async findByLogin(studentDto) {
-    const { phone, password } = studentDto;
+    const { nickname, password } = studentDto;
     const student = await this.studentModel
-      .findOne({ phone })
+      .findOne({ nickname })
       .select(StudentSelects.withPassword);
 
     if (
@@ -89,16 +94,34 @@ export class StudentService {
     }
   }
 
-  // updateProfile(_id, studentNames: UpdateProfileAuthDto) {
-  //   return this.studentModel.findByIdAndUpdate(_id, studentNames);
-  // }
-
   sanitizeStudent(student: Student) {
     const sanitized = student.toObject();
     delete sanitized["password"];
     return sanitized;
   }
 
-  getProfile = (_id) =>
-    this.studentModel.findById(_id).select(StudentSelects.basic);
+  getProfile(_id) {
+    return this.studentModel.findById(_id).select(StudentSelects.basic);
+  }
+
+  findOneByNickName(nickname) {
+    return this.studentModel.findOne({ nickname }).select(StudentSelects.basic);
+  }
+  findOneAndUpdate(student, update, getNew?) {
+    const newOption = getNew ? { new: true } : {};
+    return this.studentModel.findOneAndUpdate(student, update, {
+      upsert: true,
+      setDefaultsOnInsert: true,
+      ...newOption,
+    });
+  }
+  createRelation({ studentId, instructorId }) {
+    return this.studentInstructorModel
+      .findOneAndUpdate(
+        { student: studentId, instructor: instructorId },
+        {},
+        { upsert: true, setDefaultsOnInsert: true }
+      )
+      .select(StudentSelects.basic);
+  }
 }

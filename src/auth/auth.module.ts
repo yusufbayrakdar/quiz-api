@@ -9,5 +9,6 @@ import { StaffModule } from "src/staff/staff.module";
   imports: [InstructorModule, StudentModule, StaffModule],
   controllers: [AuthController],
   providers: [AuthService],
+  exports: [AuthService],
 })
 export class AuthModule {}

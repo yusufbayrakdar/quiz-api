@@ -9,8 +9,8 @@ export class AuthService {
     });
   }
 
-  generateStudentToken(userId: string, phone: string) {
-    return sign({ _id: userId, phone }, process.env.INSTRUCTOR_SECRET_KEY, {
+  generateStudentToken(userId: string, nickname: string) {
+    return sign({ _id: userId, nickname }, process.env.INSTRUCTOR_SECRET_KEY, {
       expiresIn: "360 days",
     });
   }

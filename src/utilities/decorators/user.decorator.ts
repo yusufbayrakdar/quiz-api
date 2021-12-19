@@ -1,8 +1,16 @@
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
+import { isValidObjectId } from "mongoose";
+
+import { ExceptionBadRequest } from "../exceptions";
 
 export const User = createParamDecorator(
-  (data: string, ctx: ExecutionContext) => {
+  (key: string, ctx: ExecutionContext) => {
     const req = ctx.switchToHttp().getRequest();
-    return req?.user[data] || req.user;
+    if (key === "_id") {
+      if (!isValidObjectId(req.params._id)) {
+        throw new ExceptionBadRequest("Invalid _id");
+      }
+    }
+    return req?.user[key] || req.user;
   }
 );

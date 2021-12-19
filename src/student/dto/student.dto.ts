@@ -1,4 +1,4 @@
-import { IsString, Length } from "class-validator";
+import { IsOptional, IsString, Length } from "class-validator";
 import { IsPhone } from "src/utilities/decorators/phone.decorator";
 
 export class StudentDto {
@@ -10,6 +10,11 @@ export class StudentDto {
   @Length(2, 20)
   lastName: string;
 
+  @IsString()
+  @Length(3, 20)
+  nickname: string;
+
+  @IsOptional()
   @IsPhone()
-  phone: string;
+  phone?: string;
 }

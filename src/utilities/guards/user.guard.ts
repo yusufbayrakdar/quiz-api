@@ -16,17 +16,23 @@ export class UserGuard extends AuthGuard("jwt") {
 
     if (token) {
       try {
-        return verify(
-          token,
-          process.env.INSTRUCTOR_SECRET_KEY,
-          (error, user) => {
-            if (error) {
-              throw new ExceptionForbidden();
-            } else {
-              return Object.assign(req, { user });
-            }
+        return verify(token, process.env.STUDENT_SECRET_KEY, (error, user) => {
+          if (error) {
+            return verify(
+              token,
+              process.env.INSTRUCTOR_SECRET_KEY,
+              (error, user) => {
+                if (error) {
+                  throw new ExceptionForbidden();
+                } else {
+                  return Object.assign(req, { user });
+                }
+              }
+            );
+          } else {
+            return Object.assign(req, { user });
           }
-        );
+        });
       } catch (error) {
         throw new ExceptionForbidden();
       }

@@ -3,11 +3,15 @@ import * as mongoose from "mongoose";
 import * as generator from "generate-password";
 import { capitalizeFirstLetter } from "src/utilities/helpers";
 
-const passwordInit = generator.generate({
-  length: 4,
-  numbers: true,
-  uppercase: true,
-});
+let passwordInit;
+function generatePasswordInit() {
+  passwordInit = generator.generate({
+    length: 4,
+    numbers: true,
+    uppercase: true,
+  });
+  return passwordInit;
+}
 
 export const StudentSchema = new mongoose.Schema(
   {
@@ -27,8 +31,15 @@ export const StudentSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    nickname: {
+      type: String,
+      trim: true,
+      required: true,
+      minlength: 3,
+    },
     passwordInit: {
       type: String,
+      set: generatePasswordInit,
       default: passwordInit,
       immutable: true,
     },
