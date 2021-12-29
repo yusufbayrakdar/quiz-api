@@ -5,11 +5,14 @@ import * as bcrypt from "bcryptjs";
 
 import { Instructor, InstructorSelects } from "./entities/instructor.entity";
 import paginationHelper from "src/utilities/helpers/pagination/pagination.helper";
+import { StudentInstructor } from "src/student/entities/student-instructor.entity";
 
 @Injectable()
 export class InstructorService {
   constructor(
-    @InjectModel("Instructor") private instructorModel: Model<Instructor>
+    @InjectModel("Instructor") private instructorModel: Model<Instructor>,
+    @InjectModel("StudentInstructor")
+    private studentInstructorModel: Model<StudentInstructor>
   ) {}
 
   async create(instructor) {
@@ -77,5 +80,9 @@ export class InstructorService {
 
   getProfile(_id) {
     return this.instructorModel.findById(_id).select(InstructorSelects.basic);
+  }
+
+  getDashboard(_id) {
+    return this.studentInstructorModel.countDocuments({ instructor: _id });
   }
 }

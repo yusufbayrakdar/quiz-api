@@ -4,7 +4,7 @@ import { StudentController } from "./student.controller";
 import { StudentSchema } from "./models/student.schema";
 import { MongooseModule } from "@nestjs/mongoose";
 import { InstructorModule } from "src/instructor/instructor.module";
-import { StudentInstructorSchema } from "./models/student-instructor";
+import { StudentInstructorSchema } from "./models/student-instructor.schema";
 
 @Module({
   imports: [

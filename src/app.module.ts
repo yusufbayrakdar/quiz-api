@@ -6,6 +6,7 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
 import { QuizModule } from "./quiz/quiz.module";
+import { ShapeModule } from "./shape/shape.module";
 
 const database =
   process.env.NODE_ENV === "development"
@@ -25,6 +26,7 @@ const database =
     }),
     AuthModule,
     QuizModule,
+    ShapeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

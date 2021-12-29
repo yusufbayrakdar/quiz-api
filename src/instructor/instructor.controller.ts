@@ -45,6 +45,12 @@ export class InstructorController {
     return await this.instructorService.getProfile(instructorId);
   }
 
+  @Get("dashboard")
+  @UseGuards(UserGuard)
+  async dashboard(@User("_id") instructorId: string) {
+    return await this.instructorService.getDashboard(instructorId);
+  }
+
   @Get(":_id")
   async detail(@IdParam("_id") instructorId: string) {
     return await this.instructorService.detail(instructorId);
