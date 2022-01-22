@@ -16,7 +16,7 @@ export class ShapeService {
       searchableFields: ["searchTag", "imageName", "phone"],
       filterableFields: ["_id"],
       select: ShapeSelects.basic,
-      sortOptions: { searchTag: 1 },
+      sortOptions: { order: 1, searchTag: 1 },
     });
   }
 

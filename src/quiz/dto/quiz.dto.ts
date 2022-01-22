@@ -1,6 +1,6 @@
 import { IsMongoId, IsNumber } from "class-validator";
 
-export class CreateQuizDto {
+export class QuizDto {
   @IsMongoId({ each: true })
   questions: Array<string>;
 

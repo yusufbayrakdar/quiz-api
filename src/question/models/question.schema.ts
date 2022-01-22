@@ -2,14 +2,51 @@ import * as mongoose from "mongoose";
 
 export const QuestionSchema = new mongoose.Schema(
   {
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
     creator: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Instructor",
     },
-    // QuestionMap: {   TODO: implement shape coordinates
-    //   QuestionCoordinate
-    // },
-    duration: Number,
+    question: [
+      {
+        shape: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Shape",
+        },
+        _id: false,
+        coordinate: String,
+      },
+    ],
+    choices: [
+      {
+        shape: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Shape",
+        },
+        _id: false,
+        coordinate: String,
+      },
+    ],
+    correctAnswer: {
+      type: String,
+      required: true,
+    },
+    duration: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Duration",
+    },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      select: "category",
+    },
+    grade: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Grade",
+    },
   },
   { timestamps: true }
 );

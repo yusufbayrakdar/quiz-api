@@ -14,6 +14,10 @@ export const ShapeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    order: {
+      type: Number,
+      default: 999,
+    },
   },
   { timestamps: true }
 );

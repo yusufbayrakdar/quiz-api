@@ -6,6 +6,10 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { InstructorModule } from "src/instructor/instructor.module";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { HttpCacheInterceptor } from "src/shared/http-cache.interceptor";
+import { DurationSchema } from "./models/duration.schema";
+import { CategorySchema } from "./models/category.schema";
+import { GradeSchema } from "./models/grade.schema";
+import { SearchModule } from "src/search/search.module";
 
 @Module({
   imports: [
@@ -15,8 +19,21 @@ import { HttpCacheInterceptor } from "src/shared/http-cache.interceptor";
         name: "Question",
         schema: QuestionSchema,
       },
+      {
+        name: "Duration",
+        schema: DurationSchema,
+      },
+      {
+        name: "Category",
+        schema: CategorySchema,
+      },
+      {
+        name: "Grade",
+        schema: GradeSchema,
+      },
     ]),
     InstructorModule,
+    SearchModule,
   ],
   controllers: [QuestionController],
   providers: [

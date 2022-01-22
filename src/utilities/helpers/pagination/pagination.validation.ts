@@ -9,10 +9,9 @@ import {
   ValidateNested,
   IsBooleanString,
   Min,
-  IsNotEmpty,
   IsMongoId,
+  IsNumberString,
 } from "class-validator";
-// import { IsStringSafe } from "../../validators/isStringSafe";
 
 export class PaginationQueryDto {
   @IsOptional()
@@ -59,6 +58,16 @@ export class PaginationQueryDto {
   @IsOptional()
   @IsBooleanString()
   confirmed: boolean;
+
+  @IsOptional()
+  @IsNumberString()
+  duration: number;
+
+  @IsOptional()
+  category: string;
+
+  @IsOptional()
+  grade: string;
 }
 
 export class Pagination {

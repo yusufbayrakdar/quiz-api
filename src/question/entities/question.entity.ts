@@ -2,14 +2,16 @@ import { Document } from "mongoose";
 import { InstructorSelects } from "src/instructor/entities/instructor.entity";
 
 export class Question extends Document {
-  questions: string[];
-  duration: number;
+  question: object;
+  choices: object;
+  category: object;
+  duration: object;
+  grade: object;
   creator: string;
 }
 
 export const QuestionSelects = {
-  basic: "questions duration creator",
-  public: "questions duration creator -_id",
+  basic: "question choices category duration grade creator",
 };
 
 export const QuestionPopulate = {

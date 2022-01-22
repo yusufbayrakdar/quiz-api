@@ -5,6 +5,7 @@ import * as mongoosePaginate from "mongoose-paginate-v2";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
+import { QuestionModule } from "./question/question.module";
 import { QuizModule } from "./quiz/quiz.module";
 import { ShapeModule } from "./shape/shape.module";
 
@@ -27,6 +28,7 @@ const database =
     AuthModule,
     QuizModule,
     ShapeModule,
+    QuestionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
