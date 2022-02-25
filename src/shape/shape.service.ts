@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import paginationHelper from "src/utilities/helpers/pagination/pagination.helper";
 
+import paginationHelper from "src/utilities/helpers/pagination/pagination.helper";
 import { Shape, ShapeSelects } from "./entities/shape.entity";
 
 @Injectable()
@@ -17,6 +17,7 @@ export class ShapeService {
       filterableFields: ["_id"],
       select: ShapeSelects.basic,
       sortOptions: { order: 1, searchTag: 1 },
+      defaultLimit: 150,
     });
   }
 

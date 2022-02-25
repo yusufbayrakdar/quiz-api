@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import paginationHelper from "src/utilities/helpers/pagination/pagination.helper";
+
 import { Category } from "./entities/category.entity";
 import { Duration } from "./entities/duration.entity";
 import { Grade } from "./entities/grade.entity";
@@ -78,6 +78,14 @@ export class QuestionService {
       {},
       { upsert: true, setDefaultsOnInsert: true, new: true }
     );
+  }
+
+  update(filter: object, update: object) {
+    return this.questionModel.findOneAndUpdate(filter, update);
+  }
+
+  delete(question) {
+    return this.questionModel.findByIdAndDelete(question);
   }
 
   createDuration(duration: number) {

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  UseGuards,
+} from "@nestjs/common";
 import { SearchService } from "src/search/search.service";
 import { IdParam } from "src/utilities/decorators/paramId.decorator";
 import { User } from "src/utilities/decorators/user.decorator";
@@ -7,6 +15,7 @@ import { CategoryDto } from "./dto/category.dto";
 import { DurationDto } from "./dto/duration.dto";
 import { GradeDto } from "./dto/grade.dto";
 import { QuestionDto } from "./dto/question.dto";
+import { UpdateQuestionDto } from "./dto/update-question.dto";
 import { QuestionService } from "./question.service";
 
 @Controller("questions")
@@ -16,13 +25,30 @@ export class QuestionController {
     private readonly searchService: SearchService
   ) {}
   @UseGuards(UserGuard)
-  @Post("create")
+  @Post()
   async create(@Body() question: QuestionDto, @User("_id") creator: string) {
     const createdQuestion: any = await this.questionService.create({
       ...question,
       creator,
     });
     return this.searchService.syncSearches(createdQuestion?._id);
+  }
+
+  @UseGuards(UserGuard)
+  @Put()
+  async update(
+    @Body() question: UpdateQuestionDto,
+    @User("_id") creator: string
+  ) {
+    const { _id, ...update } = question;
+    await this.questionService.update({ _id, creator }, update);
+    return this.searchService.syncSearches(question._id);
+  }
+
+  @Delete(":_id")
+  async delete(@IdParam() _id: string) {
+    await this.questionService.delete(_id);
+    await this.searchService.delete(_id);
   }
 
   @Post("create-duration")

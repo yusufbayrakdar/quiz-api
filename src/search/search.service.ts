@@ -23,6 +23,10 @@ export class SearchService {
     });
   }
 
+  detail(_id) {
+    return this.searchModel.findById(_id);
+  }
+
   async syncSearches(questionId: string) {
     const question: any = await this.questionService.getPopulatedQuestionById(
       questionId
@@ -34,5 +38,9 @@ export class SearchService {
         setDefaultsOnInsert: true,
       })
       .exec();
+  }
+
+  async delete(questionId: string) {
+    await this.searchModel.findByIdAndDelete(questionId);
   }
 }
