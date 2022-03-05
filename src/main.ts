@@ -27,6 +27,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor());
 
   app.use(loggerMiddleware);
+  app.enableCors();
   await app.listen(process.env.PORT || 5000);
 }
 bootstrap();
