@@ -5,6 +5,7 @@ export const ShapeSchema = new mongoose.Schema(
     searchTag: {
       type: String,
       required: true,
+      lowercase: true,
     },
     imageUrl: {
       type: String,
