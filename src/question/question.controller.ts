@@ -5,6 +5,7 @@ import {
   Get,
   Post,
   Put,
+  Query,
   UseGuards,
 } from "@nestjs/common";
 import { SearchService } from "src/search/search.service";
@@ -67,11 +68,12 @@ export class QuestionController {
   }
 
   @Get("configs")
-  async configs() {
+  async configs(@Query("all") all: string) {
+    const isActiveFilter = all === "true" ? {} : { isActive: true };
     const [categories, durations, grades] = await Promise.all([
-      this.questionService.getCategories(),
-      this.questionService.getDurations(),
-      this.questionService.getGrades(),
+      this.questionService.getCategories(isActiveFilter),
+      this.questionService.getDurations(isActiveFilter),
+      this.questionService.getGrades(isActiveFilter),
     ]);
     return { categories, durations, grades };
   }

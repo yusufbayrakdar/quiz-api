@@ -10,9 +10,9 @@ import { QuizModule } from "./quiz/quiz.module";
 import { ShapeModule } from "./shape/shape.module";
 
 const database =
-  process.env.NODE_ENV === "development"
-    ? process.env.MONGO_URI_DEV
-    : process.env.MONGO_URI;
+  process.env.NODE_ENV === "production"
+    ? process.env.MONGO_URI
+    : process.env.MONGO_URI_DEV;
 
 @Module({
   imports: [

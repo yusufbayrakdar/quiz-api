@@ -96,9 +96,9 @@ export class QuestionService {
     );
   }
 
-  getDurations() {
+  getDurations(query: object) {
     return this.durationModel
-      .find({ isActive: true })
+      .find(query)
       .select("isActive duration")
       .sort({ duration: 1 });
   }
@@ -111,9 +111,9 @@ export class QuestionService {
     );
   }
 
-  getCategories() {
+  getCategories(query: object) {
     return this.categoryModel
-      .find({ isActive: true })
+      .find(query)
       .select("isActive category")
       .sort({ category: 1 });
   }
@@ -126,9 +126,9 @@ export class QuestionService {
     );
   }
 
-  getGrades() {
+  getGrades(query: object) {
     return this.gradeModel
-      .find({ isActive: true })
+      .find(query)
       .select("isActive grade")
       .sort({ grade: 1 });
   }

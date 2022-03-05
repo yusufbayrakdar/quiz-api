@@ -15,8 +15,7 @@ server.use(cors());
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
-  // if (process.env.NODE_ENV !== "production")
-  SwaggerSetup(app);
+  if (process.env.NODE_ENV !== "production") SwaggerSetup(app);
 
   app.useGlobalPipes(
     new ValidationPipe({
