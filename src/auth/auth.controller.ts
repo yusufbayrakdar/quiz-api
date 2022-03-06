@@ -24,9 +24,9 @@ export class AuthController {
   @UseGuards(UserGuard)
   async profile(@User("_id") userId: string) {
     const instructor = await this.instructorService.getProfile(userId);
-    if (instructor) return instructor;
+    if (instructor) return { instructor };
     const student = await this.studentService.getProfile(userId);
-    if (student) return student;
+    if (student) return { student };
     throw new ExceptionBadRequest(FAILED_LOGIN);
   }
 
