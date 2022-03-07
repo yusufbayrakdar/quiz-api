@@ -16,9 +16,13 @@ export class QuestionService {
     @InjectModel("Grade") private gradeModel: Model<Grade>
   ) {}
 
-  getPopulatedQuestionById(questionId: string) {
+  findById(id: string) {
+    return this.questionModel.findById(id);
+  }
+
+  getPopulatedQuestions(filter: object = {}) {
     return this.questionModel
-      .findById(questionId)
+      .find(filter)
       .populate([
         {
           model: "Shape",
@@ -51,23 +55,30 @@ export class QuestionService {
           select: "grade",
         },
       ])
-      .then((question: any) => {
-        const prepared = {
-          isActive: question.isActive,
-          category: question.category.category,
-          duration: question.duration.duration,
-          grade: question.grade.grade,
-          correctAnswer: question.correctAnswer,
-          creator: `${question.creator.firstName} ${question.creator.lastName}`,
-          question: question.question.map((e) => ({
-            shape: e.shape.imageUrl,
-            coordinate: e.coordinate,
-          })),
-          choices: question.choices.map((e) => ({
-            shape: e.shape.imageUrl,
-            coordinate: e.coordinate,
-          })),
-        };
+      .then((questions: any) => {
+        const prepared = questions.reduce((acc, question) => {
+          acc.push({
+            _id: question._id,
+            isActive: question.isActive,
+            category: question.category.category,
+            duration: question.duration.duration,
+            grade: question.grade.grade,
+            correctAnswer: question.correctAnswer,
+            creator: {
+              name: `${question.creator.firstName} ${question.creator.lastName}`,
+              _id: question.creator._id,
+            },
+            question: question.question.map((e) => ({
+              shape: e.shape.imageUrl,
+              coordinate: e.coordinate,
+            })),
+            choices: question.choices.map((e) => ({
+              shape: e.shape.imageUrl,
+              coordinate: e.coordinate,
+            })),
+          });
+          return acc;
+        }, []);
         return prepared;
       });
   }

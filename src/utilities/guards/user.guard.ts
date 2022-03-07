@@ -23,7 +23,7 @@ export class UserGuard extends AuthGuard("jwt") {
               process.env.INSTRUCTOR_SECRET_KEY,
               (error, user) => {
                 if (error) {
-                  throw new ExceptionForbidden();
+                  throw new ExceptionForbidden(error);
                 } else {
                   return Object.assign(req, { user });
                 }

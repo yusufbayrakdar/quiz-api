@@ -21,7 +21,7 @@ export class StaffGuard extends AuthGuard("jwt") {
           process.env.SECRET_KEY_STAFF,
           (error, user) => {
             if (error) {
-              throw new ExceptionForbidden();
+              throw new ExceptionForbidden(error);
             } else {
               return Object.assign(req, { user });
             }

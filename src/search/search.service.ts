@@ -27,17 +27,17 @@ export class SearchService {
     return this.searchModel.findById(_id);
   }
 
-  async syncSearches(questionId: string) {
-    const question: any = await this.questionService.getPopulatedQuestionById(
-      questionId
+  async syncSearches(filter: object = {}) {
+    const questions: any = await this.questionService.getPopulatedQuestions(
+      filter
     );
 
-    this.searchModel
-      .findByIdAndUpdate(questionId, question, {
+    for (const question of questions) {
+      await this.searchModel.findByIdAndUpdate(question._id, question, {
         upsert: true,
         setDefaultsOnInsert: true,
-      })
-      .exec();
+      });
+    }
   }
 
   async delete(questionId: string) {

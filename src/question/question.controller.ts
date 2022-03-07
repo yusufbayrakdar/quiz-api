@@ -18,6 +18,8 @@ import { GradeDto } from "./dto/grade.dto";
 import { QuestionDto } from "./dto/question.dto";
 import { UpdateQuestionDto } from "./dto/update-question.dto";
 import { QuestionService } from "./question.service";
+import { ExceptionForbidden } from "../utilities/exceptions";
+import { UNAUTHORIZED_QUESTION_EDIT } from "src/utilities/errors";
 
 @Controller("questions")
 export class QuestionController {
@@ -32,7 +34,7 @@ export class QuestionController {
       ...question,
       creator,
     });
-    return this.searchService.syncSearches(createdQuestion?._id);
+    return this.searchService.syncSearches({ _id: createdQuestion?._id });
   }
 
   @UseGuards(UserGuard)
@@ -42,8 +44,12 @@ export class QuestionController {
     @User("_id") creator: string
   ) {
     const { _id, ...update } = question;
+    const questionCurrentState = await this.questionService.findById(_id);
+    if (String(questionCurrentState.creator) !== creator) {
+      throw new ExceptionForbidden(UNAUTHORIZED_QUESTION_EDIT);
+    }
     await this.questionService.update({ _id, creator }, update);
-    return this.searchService.syncSearches(question._id);
+    return this.searchService.syncSearches({ _id: question._id });
   }
 
   @Delete(":_id")

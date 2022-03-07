@@ -3,7 +3,7 @@ import * as mongoose from "mongoose";
 export const SearchSchema = new mongoose.Schema(
   {
     isActive: Boolean,
-    creator: String,
+    creator: Object,
     question: Object,
     choices: Object,
     correctAnswer: String,

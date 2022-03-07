@@ -8,7 +8,7 @@ export class Search extends Document {
   category: string;
   duration: number;
   grade: string;
-  creator: string;
+  creator: object;
 }
 
 export const SearchSelects = {
