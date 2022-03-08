@@ -13,11 +13,11 @@ export class ShapeService {
     return paginationHelper({
       Model: this.shapeModel,
       query,
-      searchableFields: ["searchTag", "imageName", "phone"],
+      searchableFields: ["searchTag"],
       filterableFields: ["_id"],
       select: ShapeSelects.basic,
       sortOptions: { order: 1, searchTag: 1 },
-      defaultLimit: 150,
+      defaultLimit: 55,
     });
   }
 
