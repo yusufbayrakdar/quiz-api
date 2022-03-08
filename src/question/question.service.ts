@@ -55,27 +55,18 @@ export class QuestionService {
           select: "grade",
         },
       ])
+      .lean()
       .then((questions: any) => {
         const prepared = questions.reduce((acc, question) => {
           acc.push({
-            _id: question._id,
-            isActive: question.isActive,
+            ...question,
             category: question.category.category,
             duration: question.duration.duration,
             grade: question.grade.grade,
-            correctAnswer: question.correctAnswer,
             creator: {
               name: `${question.creator.firstName} ${question.creator.lastName}`,
               _id: question.creator._id,
             },
-            question: question.question.map((e) => ({
-              shape: e.shape.imageUrl,
-              coordinate: e.coordinate,
-            })),
-            choices: question.choices.map((e) => ({
-              shape: e.shape.imageUrl,
-              coordinate: e.coordinate,
-            })),
           });
           return acc;
         }, []);

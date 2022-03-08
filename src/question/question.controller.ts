@@ -8,6 +8,7 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
+
 import { SearchService } from "src/search/search.service";
 import { IdParam } from "src/utilities/decorators/paramId.decorator";
 import { User } from "src/utilities/decorators/user.decorator";
@@ -18,8 +19,14 @@ import { GradeDto } from "./dto/grade.dto";
 import { QuestionDto } from "./dto/question.dto";
 import { UpdateQuestionDto } from "./dto/update-question.dto";
 import { QuestionService } from "./question.service";
-import { ExceptionForbidden } from "../utilities/exceptions";
-import { UNAUTHORIZED_QUESTION_EDIT } from "src/utilities/errors";
+import {
+  ExceptionBadRequest,
+  ExceptionForbidden,
+} from "../utilities/exceptions";
+import {
+  SOMETHING_WENT_WRONG,
+  UNAUTHORIZED_QUESTION_EDIT,
+} from "src/utilities/errors";
 
 @Controller("questions")
 export class QuestionController {
@@ -27,9 +34,19 @@ export class QuestionController {
     private readonly questionService: QuestionService,
     private readonly searchService: SearchService
   ) {}
+  checkShapesForm = (questionData) => {
+    for (const shapeInfo of questionData.question) {
+      if (!shapeInfo.shape || !shapeInfo.coordinate) {
+        throw new ExceptionBadRequest(SOMETHING_WENT_WRONG);
+      }
+    }
+  };
+
   @UseGuards(UserGuard)
   @Post()
   async create(@Body() question: QuestionDto, @User("_id") creator: string) {
+    this.checkShapesForm(question);
+
     const createdQuestion: any = await this.questionService.create({
       ...question,
       creator,
@@ -48,6 +65,8 @@ export class QuestionController {
     if (String(questionCurrentState.creator) !== creator) {
       throw new ExceptionForbidden(UNAUTHORIZED_QUESTION_EDIT);
     }
+    this.checkShapesForm(question);
+
     await this.questionService.update({ _id, creator }, update);
     return this.searchService.syncSearches({ _id: question._id });
   }

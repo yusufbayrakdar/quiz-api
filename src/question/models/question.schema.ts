@@ -15,6 +15,7 @@ export const QuestionSchema = new mongoose.Schema(
         shape: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Shape",
+          required: true,
         },
         _id: false,
         coordinate: String,
@@ -47,6 +48,8 @@ export const QuestionSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Grade",
     },
+    videoUrl: String,
+    description: String,
   },
   { timestamps: true }
 );

@@ -9,6 +9,8 @@ export class Search extends Document {
   duration: number;
   grade: string;
   creator: object;
+  videoUrl: string;
+  description: string;
 }
 
 export const SearchSelects = {

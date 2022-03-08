@@ -1,11 +1,26 @@
-import { IsArray, IsMongoId, IsNotEmpty, IsString } from "class-validator";
+import {
+  IsArray,
+  IsMongoId,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from "class-validator";
+
+class Shape {
+  @IsMongoId()
+  shape: string;
+
+  @IsString()
+  @IsNotEmpty()
+  coordinate: string;
+}
 
 export class QuestionDto {
   @IsArray()
-  question: Array<Object>;
+  question: Array<Shape>;
 
   @IsArray()
-  choices: Array<Object>;
+  choices: Array<Shape>;
 
   @IsString()
   @IsNotEmpty()
@@ -19,4 +34,12 @@ export class QuestionDto {
 
   @IsMongoId()
   grade: string;
+
+  @IsOptional()
+  @IsString()
+  videoUrl: string;
+
+  @IsOptional()
+  @IsString()
+  description: string;
 }

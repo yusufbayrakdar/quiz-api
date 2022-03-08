@@ -7,7 +7,7 @@ export class Question extends Document {
   category: object;
   duration: object;
   grade: object;
-  creator: string;
+  creator: object;
 }
 
 export const QuestionSelects = {
