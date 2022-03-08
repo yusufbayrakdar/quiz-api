@@ -17,7 +17,7 @@ export class ShapeService {
       filterableFields: ["_id"],
       select: ShapeSelects.basic,
       sortOptions: { order: 1, searchTag: 1 },
-      defaultLimit: 55,
+      defaultLimit: 100,
     });
   }
 
