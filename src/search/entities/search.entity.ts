@@ -8,11 +8,12 @@ export class Search extends Document {
   category: string;
   duration: number;
   grade: string;
-  creator: object;
+  creatorName: string;
+  creatorId: string;
   videoUrl: string;
   description: string;
 }
 
 export const SearchSelects = {
-  basic: "question choices category duration grade creator",
+  basic: "question choices category duration grade creatorId creatorName",
 };

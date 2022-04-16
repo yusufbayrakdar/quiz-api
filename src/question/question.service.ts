@@ -63,10 +63,8 @@ export class QuestionService {
             category: question.category.category,
             duration: question.duration.duration,
             grade: question.grade.grade,
-            creator: {
-              name: `${question.creator.firstName} ${question.creator.lastName}`,
-              _id: question.creator._id,
-            },
+            creatorName: `${question.creator.firstName} ${question.creator.lastName}`,
+            creatorId: question.creator._id,
           });
           return acc;
         }, []);

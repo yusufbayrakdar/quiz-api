@@ -1,9 +1,17 @@
-import { IsMongoId, IsNumber } from "class-validator";
+import { IsMongoId, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class QuizDto {
+  @IsOptional()
+  @IsMongoId()
+  _id: string;
+
   @IsMongoId({ each: true })
-  questions: Array<string>;
+  questionList: Array<string>;
 
   @IsNumber()
   duration: number;
+
+  @IsOptional()
+  @IsString()
+  name: string;
 }

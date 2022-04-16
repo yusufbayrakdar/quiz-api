@@ -18,6 +18,9 @@ export class PaginationQueryDto {
   _id?: any;
 
   @IsOptional()
+  ids?: any;
+
+  @IsOptional()
   @Type(() => Number)
   @Min(1)
   page: number;
@@ -68,6 +71,14 @@ export class PaginationQueryDto {
 
   @IsOptional()
   grade: string;
+
+  @IsOptional()
+  @IsMongoId()
+  creatorId: string;
+
+  @IsOptional()
+  @IsString()
+  creatorName: string;
 }
 
 export class Pagination {

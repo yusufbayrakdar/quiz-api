@@ -10,6 +10,7 @@ export class SearchController {
   constructor(private readonly searchService: SearchService) {}
   @Get()
   async paginate(@Query() query: PaginationQueryDto) {
+    if (query.ids) query._id = { $in: query.ids.split(".") };
     return await this.searchService.paginate(query);
   }
 

@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { QuestionService } from "src/question/question.service";
+import { QuizService } from "src/quiz/quiz.service";
 import paginationHelper from "src/utilities/helpers/pagination/pagination.helper";
 import { Search, SearchSelects } from "./entities/search.entity";
 
@@ -9,15 +10,16 @@ import { Search, SearchSelects } from "./entities/search.entity";
 export class SearchService {
   constructor(
     @InjectModel("Search") private searchModel: Model<Search>,
-    private readonly questionService: QuestionService
+    private readonly questionService: QuestionService,
+    private readonly quizService: QuizService
   ) {}
 
   paginate(query) {
     return paginationHelper({
       Model: this.searchModel,
       query: { ...query, isActive: true },
-      filterableFields: ["_id", "duration", "grade", "category"],
-      searchableFields: ["creator"],
+      filterableFields: ["_id", "duration", "grade", "category", "creatorId"],
+      searchableFields: ["creatorName"],
       defaultLimit: 10,
       select: SearchSelects.basic,
     });
@@ -33,10 +35,15 @@ export class SearchService {
     );
 
     for (const question of questions) {
-      await this.searchModel.findByIdAndUpdate(question._id, question, {
-        upsert: true,
-        setDefaultsOnInsert: true,
-      });
+      const quizList = await this.quizService.getQuizList(question._id);
+      await this.searchModel.findByIdAndUpdate(
+        question._id,
+        { ...question, quizList },
+        {
+          upsert: true,
+          setDefaultsOnInsert: true,
+        }
+      );
     }
   }
 

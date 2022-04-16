@@ -2,8 +2,10 @@ import * as mongoose from "mongoose";
 
 export const SearchSchema = new mongoose.Schema(
   {
+    id: { auto: true, type: Number },
     isActive: Boolean,
-    creator: Object,
+    creatorName: String,
+    creatorId: mongoose.Schema.Types.ObjectId,
     question: Object,
     choices: Object,
     correctAnswer: String,
@@ -13,5 +15,5 @@ export const SearchSchema = new mongoose.Schema(
     videoUrl: String,
     description: String,
   },
-  { timestamps: true }
+  { timestamps: true, strict: true }
 );

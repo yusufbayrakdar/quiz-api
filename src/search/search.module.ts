@@ -7,6 +7,7 @@ import { SearchSchema } from "./models/search.schema";
 import { SearchController } from "./search.controller";
 import { SearchService } from "./search.service";
 import { QuestionModule } from "src/question/question.module";
+import { QuizModule } from "src/quiz/quiz.module";
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { QuestionModule } from "src/question/question.module";
     ]),
     InstructorModule,
     forwardRef(() => QuestionModule),
+    forwardRef(() => QuizModule),
   ],
   controllers: [SearchController],
   providers: [
