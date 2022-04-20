@@ -79,6 +79,10 @@ export class PaginationQueryDto {
   @IsOptional()
   @IsString()
   creatorName: string;
+
+  @IsOptional()
+  @IsBooleanString()
+  populateQuestions: boolean;
 }
 
 export class Pagination {
