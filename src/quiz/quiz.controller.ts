@@ -29,13 +29,8 @@ export class QuizController {
   }
 
   @Get(":_id")
-  async detail(@IdParam() _id: string, @Query() query: PaginationQueryDto) {
-    const quiz: any = await this.quizService.detail(_id);
-    const questionList = await this.searchService.paginate({
-      ...query,
-      _id: { $in: quiz?.questionList },
-    });
-    return { ...quiz, questionList };
+  async detail(@IdParam() _id: string) {
+    return await this.quizService.detail(_id);
   }
 
   @UseGuards(UserGuard)
