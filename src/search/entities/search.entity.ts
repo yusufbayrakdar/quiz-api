@@ -2,6 +2,7 @@ import { Document } from "mongoose";
 
 export class Search extends Document {
   isActive: boolean;
+  questionNumber: number;
   question: object;
   choices: object;
   correctAnswer: string;
@@ -15,5 +16,6 @@ export class Search extends Document {
 }
 
 export const SearchSelects = {
-  basic: "question choices category duration grade creatorId creatorName",
+  basic:
+    "questionNumber question choices category duration grade creatorId creatorName",
 };

@@ -17,7 +17,7 @@ export class SearchController {
   @Get("/sync-all")
   @UseGuards(StaffGuard)
   async syncAll() {
-    return await this.searchService.syncSearches({ isActive: true });
+    return await this.searchService.syncSearches();
   }
 
   @Get(":_id")

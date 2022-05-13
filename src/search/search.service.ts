@@ -33,12 +33,29 @@ export class SearchService {
     const questions: any = await this.questionService.getPopulatedQuestions(
       filter
     );
+    const hasAnyFilter = Object.keys(filter).length > 0;
 
-    for (const question of questions) {
+    let startNumber = 1;
+    if (hasAnyFilter) {
+      const lastSyncSearch: any = await this.searchModel
+        .findOne()
+        .sort({ createdAt: -1 });
+      startNumber = lastSyncSearch?.questionNumber + 1;
+    }
+
+    for (let i = 0; i < questions.length; i++) {
+      const question = questions[i];
       const quizList = await this.quizService.getQuizList(question._id);
+      const search = await this.searchModel
+        .findById(question._id)
+        .select("questionNumber");
       await this.searchModel.findByIdAndUpdate(
         question._id,
-        { ...question, quizList },
+        {
+          ...question,
+          quizList,
+          questionNumber: search?.questionNumber || startNumber + i,
+        },
         {
           upsert: true,
           setDefaultsOnInsert: true,

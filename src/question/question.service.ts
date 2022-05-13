@@ -55,6 +55,7 @@ export class QuestionService {
           select: "grade",
         },
       ])
+      .sort({ createdAt: 1 })
       .lean()
       .then((questions: any) => {
         const prepared = questions.reduce((acc, question) => {
