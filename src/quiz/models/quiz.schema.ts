@@ -9,6 +9,11 @@ export const QuizSchema = new mongoose.Schema(
       default: [],
       ref: "Question",
     },
+    assignedStudents: {
+      type: [mongoose.Schema.Types.ObjectId],
+      default: [],
+      ref: "Student",
+    },
     creator: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Instructor",

@@ -11,9 +11,12 @@ import { SearchService } from "src/search/search.service";
 import { IdParam } from "src/utilities/decorators/paramId.decorator";
 
 import { User } from "src/utilities/decorators/user.decorator";
+import { INSTRUCTOR_DOES_NOT_EXIST } from "src/utilities/errors";
+import { ExceptionBadRequest } from "src/utilities/exceptions";
 import { UserGuard } from "src/utilities/guards/user.guard";
 import { PaginationQueryDto } from "src/utilities/helpers/pagination/pagination.validation";
 import { QuizDto } from "./dto/quiz.dto";
+import { UpdateQuizDto } from "./dto/update-quiz.dto";
 import { QuizService } from "./quiz.service";
 
 @Controller("quizzes")
@@ -43,6 +46,8 @@ export class QuizController {
   @UseGuards(UserGuard)
   @Post()
   async create(@Body() quiz: QuizDto, @User("_id") creator: string) {
+    if (!creator) throw new ExceptionBadRequest(INSTRUCTOR_DOES_NOT_EXIST);
+
     const createdQuiz: any = await this.quizService.create({
       ...quiz,
       creator,
@@ -55,7 +60,9 @@ export class QuizController {
 
   @UseGuards(UserGuard)
   @Put()
-  async update(@Body() quiz: QuizDto, @User("_id") creator: string) {
+  async update(@Body() quiz: UpdateQuizDto, @User("_id") creator: string) {
+    if (!creator) throw new ExceptionBadRequest(INSTRUCTOR_DOES_NOT_EXIST);
+
     const filter = { _id: quiz._id, creator };
     const payload = { ...quiz };
     delete payload._id;

@@ -30,6 +30,10 @@ export class QuizService {
       .findById(_id)
       .populate([
         {
+          path: "assignedStudents",
+          select: "firstName lastName",
+        },
+        {
           path: "creator",
           select: "firstName lastName",
         },
