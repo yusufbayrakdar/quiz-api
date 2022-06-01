@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
 
 import { User } from "src/utilities/decorators/user.decorator";
 import { UserGuard } from "src/utilities/guards/user.guard";
@@ -6,11 +15,23 @@ import { StudentService } from "./student.service";
 import { PaginationQueryDto } from "src/utilities/helpers/pagination/pagination.validation";
 import { StudentDto } from "./dto/student.dto";
 import { ExceptionBadRequest } from "src/utilities/exceptions";
-import { STUDENT_ALREADY_EXIST } from "src/utilities/errors";
+import {
+  INSTRUCTOR_DOES_NOT_EXIST,
+  SOMETHING_WENT_WRONG,
+  STUDENT_ALREADY_EXIST,
+} from "src/utilities/errors";
+import { UpdateStudentDto } from "./dto/update-student.dto";
+import { IdParam } from "src/utilities/decorators/paramId.decorator";
+import { InstructorService } from "src/instructor/instructor.service";
+import { QuizService } from "src/quiz/quiz.service";
 
 @Controller("students")
 export class StudentController {
-  constructor(private readonly studentService: StudentService) {}
+  constructor(
+    private readonly studentService: StudentService,
+    private readonly instructorService: InstructorService,
+    private readonly quizService: QuizService
+  ) {}
 
   @Get()
   async list(@Query() query: PaginationQueryDto) {
@@ -29,30 +50,71 @@ export class StudentController {
     const foundStudent = await this.studentService.findOneByNickName(
       studentDto.nickname
     );
+    const foundInstructor = await this.instructorService.exists({
+      _id: instructorId,
+    });
 
-    let createdStudent;
-    if (!foundStudent) {
-      createdStudent = await this.studentService.findOneAndUpdate(
-        Object.assign(studentDto, { passwordInit: true }),
-        {},
-        true
-      );
+    if (foundStudent) throw new ExceptionBadRequest(STUDENT_ALREADY_EXIST);
+    if (!foundInstructor) {
+      throw new ExceptionBadRequest(INSTRUCTOR_DOES_NOT_EXIST);
     }
-    if (
-      !foundStudent ||
-      (foundStudent.firstName === studentDto.firstName &&
-        foundStudent.lastName === studentDto.lastName)
-    ) {
-      const studentId =
-        foundStudent?._id || createdStudent ? createdStudent?._id : null;
-      if (studentId) {
-        await this.studentService.createRelation({
-          instructorId,
-          studentId,
-        });
+
+    const createdStudent = await this.studentService.findOneAndUpdate({
+      student: { ...studentDto, passwordInit: true, creator: instructorId },
+      update: {},
+      getNew: true,
+    });
+    const studentId = createdStudent?._id;
+    if (studentId) {
+      await this.studentService.createRelation({
+        instructorId,
+        studentId,
+      });
+    }
+  }
+
+  @Put()
+  @UseGuards(UserGuard)
+  async update(
+    @User("_id") instructorId: string,
+    @Body() studentDto: UpdateStudentDto
+  ) {
+    const foundStudent = await this.studentService.findOneByNickName(
+      studentDto.nickname,
+      studentDto._id
+    );
+
+    if (foundStudent) throw new ExceptionBadRequest(STUDENT_ALREADY_EXIST);
+    const { _id, ...student } = studentDto;
+    await this.studentService.findOneAndUpdate({
+      student: { _id, creator: instructorId },
+      update: student,
+      upsert: false,
+    });
+  }
+
+  @Delete(":_id")
+  @UseGuards(UserGuard)
+  async delete(
+    @User("_id") instructorId: string,
+    @IdParam() studentId: string
+  ) {
+    try {
+      await this.studentService.delete(studentId);
+
+      const includedQuizzes = await this.quizService.findByStudentId(studentId);
+      for (const quiz of includedQuizzes) {
+        await this.quizService.findOneAndUpdate(
+          { _id: quiz?._id },
+          {
+            assignedStudents: quiz?.assignedStudents?.filter(
+              (sId) => String(sId) !== String(studentId)
+            ),
+          }
+        );
       }
-    } else {
-      throw new ExceptionBadRequest(STUDENT_ALREADY_EXIST);
+    } catch (error) {
+      throw new ExceptionBadRequest(SOMETHING_WENT_WRONG);
     }
   }
 

@@ -1,17 +1,21 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   Put,
   Query,
   UseGuards,
 } from "@nestjs/common";
+
 import { SearchService } from "src/search/search.service";
 import { IdParam } from "src/utilities/decorators/paramId.decorator";
-
 import { User } from "src/utilities/decorators/user.decorator";
-import { INSTRUCTOR_DOES_NOT_EXIST } from "src/utilities/errors";
+import {
+  INSTRUCTOR_DOES_NOT_EXIST,
+  SOMETHING_WENT_WRONG,
+} from "src/utilities/errors";
 import { ExceptionBadRequest } from "src/utilities/exceptions";
 import { UserGuard } from "src/utilities/guards/user.guard";
 import { PaginationQueryDto } from "src/utilities/helpers/pagination/pagination.validation";
@@ -41,6 +45,16 @@ export class QuizController {
       });
       return { ...quiz, questionList };
     } else return quiz;
+  }
+
+  @UseGuards(UserGuard)
+  @Delete(":_id")
+  async delete(@IdParam() _id: string, @User("_id") creator: string) {
+    try {
+      await this.quizService.delete({ _id, creator });
+    } catch (error) {
+      throw new ExceptionBadRequest(SOMETHING_WENT_WRONG);
+    }
   }
 
   @UseGuards(UserGuard)

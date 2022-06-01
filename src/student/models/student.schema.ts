@@ -49,6 +49,10 @@ export const StudentSchema = new mongoose.Schema(
       select: false,
       default: toHashPassword(passwordInit),
     },
+    creator: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Instructor",
+    },
   },
   { timestamps: true }
 );

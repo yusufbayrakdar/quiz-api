@@ -104,13 +104,26 @@ export class StudentService {
     return this.studentModel.findById(_id).select(StudentSelects.basic);
   }
 
-  findOneByNickName(nickname) {
-    return this.studentModel.findOne({ nickname }).select(StudentSelects.basic);
+  findOneByNickName(nickname, excludeId?) {
+    const excludeQuery = excludeId ? { _id: { $ne: excludeId } } : {};
+    return this.studentModel
+      .findOne({ nickname, ...excludeQuery })
+      .select(StudentSelects.basic);
   }
-  findOneAndUpdate(student, update, getNew?) {
+  findOneAndUpdate({
+    student,
+    update,
+    getNew,
+    upsert = true,
+  }: {
+    student: object;
+    update: object;
+    getNew?: boolean;
+    upsert?: boolean;
+  }) {
     const newOption = getNew ? { new: true } : {};
     return this.studentModel.findOneAndUpdate(student, update, {
-      upsert: true,
+      upsert,
       setDefaultsOnInsert: true,
       ...newOption,
     });
@@ -123,5 +136,8 @@ export class StudentService {
         { upsert: true, setDefaultsOnInsert: true }
       )
       .select(StudentSelects.basic);
+  }
+  delete(studentId) {
+    return this.studentModel.findByIdAndDelete(studentId);
   }
 }

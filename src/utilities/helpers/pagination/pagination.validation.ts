@@ -83,6 +83,10 @@ export class PaginationQueryDto {
   @IsOptional()
   @IsBooleanString()
   populateQuestions: boolean;
+
+  @IsOptional()
+  @IsMongoId()
+  assignedStudents: string;
 }
 
 export class Pagination {

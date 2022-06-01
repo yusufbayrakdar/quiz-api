@@ -7,6 +7,7 @@ export class Student extends Document {
   nickname: string;
   password: string;
   passwordInit: string;
+  creator: string;
 }
 
 export const StudentSelects = {

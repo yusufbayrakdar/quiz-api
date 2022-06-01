@@ -49,7 +49,13 @@ export class QuizService {
     return paginationHelper({
       Model: this.quizModel,
       query: { ...query, isActive: true },
-      filterableFields: ["_id", "name", "duration", "creator"],
+      filterableFields: [
+        "_id",
+        "name",
+        "duration",
+        "creator",
+        "assignedStudents",
+      ],
       searchableFields: ["name"],
       defaultLimit: 10,
       populate: [
@@ -73,5 +79,13 @@ export class QuizService {
         },
       ],
     });
+  }
+
+  findByStudentId(studentId: string) {
+    return this.quizModel.find({ assignedStudents: studentId }).lean();
+  }
+
+  delete(query: { _id: string; creator: string }) {
+    return this.quizModel.findOneAndDelete(query);
   }
 }

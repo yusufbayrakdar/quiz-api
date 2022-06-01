@@ -5,6 +5,8 @@ import { StudentSchema } from "./models/student.schema";
 import { MongooseModule } from "@nestjs/mongoose";
 import { InstructorModule } from "src/instructor/instructor.module";
 import { StudentInstructorSchema } from "./models/student-instructor.schema";
+import { QuizSchema } from "src/quiz/models/quiz.schema";
+import { QuizService } from "src/quiz/quiz.service";
 
 @Module({
   imports: [
@@ -18,10 +20,14 @@ import { StudentInstructorSchema } from "./models/student-instructor.schema";
         name: "StudentInstructor",
         schema: StudentInstructorSchema,
       },
+      {
+        name: "Quiz",
+        schema: QuizSchema,
+      },
     ]),
   ],
   controllers: [StudentController],
-  providers: [StudentService],
+  providers: [StudentService, QuizService],
   exports: [StudentService],
 })
 export class StudentModule {}
