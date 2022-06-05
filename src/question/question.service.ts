@@ -16,6 +16,10 @@ export class QuestionService {
     @InjectModel("Grade") private gradeModel: Model<Grade>
   ) {}
 
+  find(query: object, select?: string) {
+    return this.questionModel.find(query).select(select).lean();
+  }
+
   findById(id: string) {
     return this.questionModel.findById(id);
   }

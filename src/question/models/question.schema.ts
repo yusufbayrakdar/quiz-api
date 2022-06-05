@@ -42,7 +42,6 @@ export const QuestionSchema = new mongoose.Schema(
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
-      select: "category",
     },
     grade: {
       type: mongoose.Schema.Types.ObjectId,

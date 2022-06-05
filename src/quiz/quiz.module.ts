@@ -7,6 +7,8 @@ import { InstructorModule } from "src/instructor/instructor.module";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { HttpCacheInterceptor } from "src/shared/http-cache.interceptor";
 import { SearchModule } from "src/search/search.module";
+import { ScoreModule } from "src/score/quiz.module";
+import { QuestionModule } from "src/question/question.module";
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { SearchModule } from "src/search/search.module";
     ]),
     InstructorModule,
     forwardRef(() => SearchModule),
+    forwardRef(() => ScoreModule),
+    forwardRef(() => QuestionModule),
   ],
   controllers: [QuizController],
   providers: [

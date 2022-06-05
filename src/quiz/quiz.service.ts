@@ -17,6 +17,10 @@ export class QuizService {
     );
   }
 
+  findById(_id: string, select?: string) {
+    return this.quizModel.findById(_id).select(select).lean();
+  }
+
   findOneAndUpdate(filter, payload) {
     return this.quizModel.findOneAndUpdate(filter, payload, {
       upsert: true,
@@ -61,7 +65,7 @@ export class QuizService {
       populate: [
         {
           path: "questionList",
-          select: "question choices",
+          select: "question choices duration",
           populate: [
             {
               path: "question.shape",
@@ -70,6 +74,10 @@ export class QuizService {
             {
               path: "choices.shape",
               select: "imageUrl",
+            },
+            {
+              path: "duration",
+              select: "duration",
             },
           ],
         },

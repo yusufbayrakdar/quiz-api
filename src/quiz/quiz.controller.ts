@@ -9,11 +9,13 @@ import {
   UseGuards,
 } from "@nestjs/common";
 
+import { ScoreDto } from "src/score/dto/score.dto";
 import { SearchService } from "src/search/search.service";
 import { IdParam } from "src/utilities/decorators/paramId.decorator";
 import { User } from "src/utilities/decorators/user.decorator";
 import {
   INSTRUCTOR_DOES_NOT_EXIST,
+  QUIZ_NOT_FOUND,
   SOMETHING_WENT_WRONG,
 } from "src/utilities/errors";
 import { ExceptionBadRequest } from "src/utilities/exceptions";
@@ -22,12 +24,16 @@ import { PaginationQueryDto } from "src/utilities/helpers/pagination/pagination.
 import { QuizDto } from "./dto/quiz.dto";
 import { UpdateQuizDto } from "./dto/update-quiz.dto";
 import { QuizService } from "./quiz.service";
+import { ScoreService } from "../score/score.service";
+import { QuestionService } from "src/question/question.service";
 
 @Controller("quizzes")
 export class QuizController {
   constructor(
     private readonly quizService: QuizService,
-    private readonly searchService: SearchService
+    private readonly searchService: SearchService,
+    private readonly questionService: QuestionService,
+    private readonly scoreService: ScoreService
   ) {}
 
   @Get()
@@ -69,6 +75,43 @@ export class QuizController {
 
     return this.searchService.syncSearches({
       _id: { $in: createdQuiz?.questionList },
+    });
+  }
+
+  @UseGuards(UserGuard)
+  @Post("finish")
+  async finish(@Body() quizFinishInfo: ScoreDto, @User("_id") student: string) {
+    const quiz = await this.quizService.findById(
+      quizFinishInfo.quiz,
+      "questionList"
+    );
+    const totalQuestions = quiz?.questionList?.length;
+    if (!totalQuestions) throw new ExceptionBadRequest(QUIZ_NOT_FOUND);
+
+    const questionIds = quizFinishInfo.answerList.map(
+      (answer) => answer.questionId
+    );
+    const questionList: any = await this.questionService.find(
+      { _id: { $in: questionIds } },
+      "correctAnswer"
+    );
+
+    const score = quizFinishInfo.answerList.reduce((total, answerInfo) => {
+      if (
+        questionList.find(
+          (question) => question._id.toString() === answerInfo.questionId
+        )?.correctAnswer === answerInfo.answer
+      ) {
+        total++;
+      }
+      return total;
+    }, 0);
+    return await this.scoreService.create({
+      student,
+      score,
+      totalQuestions,
+      quiz: quizFinishInfo.quiz,
+      finishedAt: quizFinishInfo.finishedAt,
     });
   }
 
