@@ -7,6 +7,7 @@ export class QuizDto {
   @IsMongoId({ each: true })
   assignedStudents: Array<string>;
 
+  @IsOptional()
   @IsNumber()
   duration: number;
 
