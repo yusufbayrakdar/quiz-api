@@ -22,8 +22,7 @@ export class QuestionDto {
   @IsArray()
   choices: Array<Shape>;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsMongoId()
   correctAnswer: string;
 
   @IsMongoId()
