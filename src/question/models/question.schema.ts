@@ -32,7 +32,8 @@ export const QuestionSchema = new mongoose.Schema(
       },
     ],
     correctAnswer: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Shape",
       required: true,
     },
     duration: {
