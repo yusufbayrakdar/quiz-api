@@ -98,9 +98,11 @@ export class QuizController {
 
     const score = quizFinishInfo.answerList.reduce((total, answerInfo) => {
       if (
-        questionList.find(
-          (question) => question._id.toString() === answerInfo.questionId
-        )?.correctAnswer === answerInfo.answer
+        String(
+          questionList.find(
+            (question) => question._id.toString() === answerInfo.questionId
+          )?.correctAnswer
+        ) === String(answerInfo.answer)
       ) {
         total++;
       }
