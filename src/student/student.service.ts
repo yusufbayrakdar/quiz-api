@@ -101,7 +101,14 @@ export class StudentService {
   }
 
   getProfile(_id) {
-    return this.studentModel.findById(_id).select(StudentSelects.basic);
+    return this.studentModel.findById(_id).select(StudentSelects.basic).lean();
+  }
+
+  checkInstructorAuthForStudent(instructorId, studentId) {
+    return this.studentInstructorModel.exists({
+      instructor: instructorId,
+      student: studentId,
+    });
   }
 
   findOneByNickName(nickname, excludeId?) {

@@ -43,14 +43,34 @@ export class QuizController {
 
   @Get(":_id")
   async detail(@IdParam() _id: string, @Query() query: PaginationQueryDto) {
-    const quiz: any = await this.quizService.detail(_id);
+    let quiz: any = await this.quizService.detail(_id);
     if (query.populateQuestions) {
       const questionList = await this.searchService.paginate({
         ...query,
         _id: { $in: quiz?.questionList },
       });
-      return { ...quiz, questionList };
-    } else return quiz;
+      quiz = { ...quiz, questionList };
+    }
+    if (query.results) {
+      // the hardest question may shown
+      const scores = await this.scoreService.findByQuiz(_id);
+      const completedStudents = await this.scoreService.completedCount(_id);
+
+      let finishedAtTotal = 0;
+      let scoreTotal = 0;
+      for (const scoreInfo of scores) {
+        finishedAtTotal += scoreInfo.finishedAt;
+        scoreTotal += scoreInfo.score;
+      }
+      const general = {
+        finishedAtAvg: Number((finishedAtTotal / scores.length)?.toFixed(2)),
+        scoreAvg: Number((scoreTotal / scores.length)?.toFixed(2)),
+        completedStudents: completedStudents?.length,
+      };
+
+      quiz = { ...quiz, general, scores };
+    }
+    return quiz;
   }
 
   @UseGuards(UserGuard)

@@ -42,6 +42,7 @@ export const StudentSchema = new mongoose.Schema(
       set: generatePasswordInit,
       default: passwordInit,
       immutable: true,
+      select: false,
     },
     password: {
       type: String,

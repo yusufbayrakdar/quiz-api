@@ -36,10 +36,18 @@ export class ScoreService {
       .lean();
   }
 
+  findByQuiz(quiz: any) {
+    return this.scoreModel.find({ quiz }).populate("student").lean();
+  }
+
+  completedCount(quiz: any) {
+    return this.scoreModel.countDocuments({ quiz }).distinct("student");
+  }
+
   paginate(query, select?: string) {
     return paginationHelper({
       Model: this.scoreModel,
-      query: { ...query },
+      query,
       filterableFields: ["_id", "student", "quiz", "score"],
       defaultLimit: 20,
       populate: ScorePopulates,

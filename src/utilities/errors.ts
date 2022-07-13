@@ -5,5 +5,6 @@ export const INSTRUCTOR_DOES_NOT_EXIST = "Eğitmen bulunamadı";
 export const IMAGE_ALREADY_EXIST = "Şekil zaten kayıtlı";
 export const FIREBASE_CONFIG_NOT_FOUND = "FIREBASE_CONFIG bulunamadı";
 export const UNAUTHORIZED_QUESTION_EDIT = "Soruyu düzenleme yetkiniz yok";
+export const UNAUTHORIZED_INSTRUCTOR_REQUEST = "Yetkisiz eğitmen isteği!";
 export const SOMETHING_WENT_WRONG = "Bir şeyler ters gitti";
 export const QUIZ_NOT_FOUND = "Deneme bulunamadı";
