@@ -68,6 +68,7 @@ export class StudentService {
       customFilters,
       searchableFields: ["firstName", "lastName", "nickname", "phone"],
       filterableFields: ["_id"],
+      select: StudentSelects.withPassword,
     });
   }
 
