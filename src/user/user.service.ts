@@ -30,7 +30,6 @@ export class UserService {
       customFilters.phone = null;
     }
 
-    console.log("query", query);
     return paginationHelper({
       Model: this.userModel,
       query,
