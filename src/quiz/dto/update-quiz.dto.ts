@@ -9,10 +9,6 @@ export class UpdateQuizDto {
   questionList: Array<string>;
 
   @IsOptional()
-  @IsMongoId({ each: true })
-  assignedStudents: Array<string>;
-
-  @IsOptional()
   @IsNumber()
   duration: number;
 

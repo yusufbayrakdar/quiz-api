@@ -37,7 +37,11 @@ export class ScoreService {
   }
 
   findByQuiz(quiz: any) {
-    return this.scoreModel.find({ quiz }).populate("student").lean();
+    return this.scoreModel
+      .find({ quiz })
+      .populate("student")
+      .sort({ createdAt: -1 })
+      .lean();
   }
 
   completedCount(quiz: any) {

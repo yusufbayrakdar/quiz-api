@@ -3,7 +3,6 @@ import { ShapeService } from "./shape.service";
 import { ShapeController } from "./shape.controller";
 import { ShapeSchema } from "./models/shape.schema";
 import { MongooseModule } from "@nestjs/mongoose";
-import { InstructorModule } from "src/instructor/instructor.module";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { HttpCacheInterceptor } from "src/shared/http-cache.interceptor";
 
@@ -16,7 +15,6 @@ import { HttpCacheInterceptor } from "src/shared/http-cache.interceptor";
         schema: ShapeSchema,
       },
     ]),
-    InstructorModule,
   ],
   controllers: [ShapeController],
   providers: [

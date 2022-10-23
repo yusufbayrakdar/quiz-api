@@ -1,18 +1,19 @@
 import * as mongoose from "mongoose";
 
-export const ScoreSchema = new mongoose.Schema(
+export const StudentInstructorSchema = new mongoose.Schema(
   {
     student: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    quiz: {
+    instructor: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Quiz",
+      ref: "User",
     },
-    score: Number,
-    totalQuestions: Number,
-    finishedAt: Number,
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );

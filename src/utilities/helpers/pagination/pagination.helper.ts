@@ -13,7 +13,7 @@ const paginationHelper = async (pagination: Pagination) => {
     sortOptions = { createdAt: -1 },
     select,
     populate,
-    lean = false,
+    lean = true,
   } = pagination;
   const allQuery = { ...defaultQuery, ...query };
   const { page, limit, search, all } = query;
@@ -21,7 +21,7 @@ const paginationHelper = async (pagination: Pagination) => {
   // FILTER
   const defaultFilterableFields = ["isActive"];
   const allFilterableFields = [...defaultFilterableFields, ...filterableFields];
-  let filter: any = {};
+  const filter: any = {};
 
   const queryKeys = Object.keys(allQuery);
   allFilterableFields.map((f) => {
@@ -40,10 +40,10 @@ const paginationHelper = async (pagination: Pagination) => {
       if (typeof field === "function") return field(regex);
       return { [field]: { $regex: regex } };
     });
-    filter = Object.assign(filter, { $or: searchableFieldQueries });
+    Object.assign(filter, { $or: searchableFieldQueries });
   }
 
-  filter = { ...filter, ...customFilters };
+  Object.assign(filter, customFilters);
 
   const options = {
     page: page || defaultPage,
@@ -73,7 +73,7 @@ const paginationHelper = async (pagination: Pagination) => {
     // result.pagingCounter = 1
     return result;
   } catch (error) {
-    console.log(`error`, error);
+    throw new Error(error);
   }
 };
 

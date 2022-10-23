@@ -1,5 +1,5 @@
 import { Document } from "mongoose";
-import { InstructorSelects } from "src/instructor/entities/instructor.entity";
+import { UserSelects } from "src/user/entities/user.entity";
 
 export class Question extends Document {
   question: object;
@@ -16,5 +16,5 @@ export const QuestionSelects = {
 
 export const QuestionPopulate = {
   path: "instructor",
-  select: InstructorSelects.public,
+  select: UserSelects.INSTRUCTOR.basic,
 };

@@ -27,6 +27,8 @@ import {
   SOMETHING_WENT_WRONG,
   UNAUTHORIZED_QUESTION_EDIT,
 } from "src/utilities/errors";
+import { InstructorGuard } from "src/utilities/guards/instructor.guard";
+import { AdminGuard } from "src/utilities/guards/admin.guard";
 
 @Controller("questions")
 export class QuestionController {
@@ -35,14 +37,15 @@ export class QuestionController {
     private readonly searchService: SearchService
   ) {}
   checkShapesForm = (questionData) => {
-    for (const shapeInfo of questionData.question) {
+    for (let i = 0; i < questionData.question.length; i++) {
+      const shapeInfo = questionData.question[i];
       if (!shapeInfo.shape || !shapeInfo.coordinate) {
         throw new ExceptionBadRequest(SOMETHING_WENT_WRONG);
       }
     }
   };
 
-  @UseGuards(UserGuard)
+  @UseGuards(InstructorGuard)
   @Post()
   async create(@Body() question: QuestionDto, @User("_id") creator: string) {
     this.checkShapesForm(question);
@@ -54,7 +57,7 @@ export class QuestionController {
     return this.searchService.syncSearches({ _id: createdQuestion?._id });
   }
 
-  @UseGuards(UserGuard)
+  @UseGuards(InstructorGuard)
   @Put()
   async update(
     @Body() question: UpdateQuestionDto,
@@ -71,27 +74,32 @@ export class QuestionController {
     return this.searchService.syncSearches({ _id: question._id });
   }
 
+  @UseGuards(InstructorGuard)
   @Delete(":_id")
   async delete(@IdParam() _id: string) {
     await this.questionService.delete(_id);
     await this.searchService.delete(_id);
   }
 
+  @UseGuards(AdminGuard)
   @Post("create-duration")
   async createDuration(@Body() { duration }: DurationDto) {
     return this.questionService.createDuration(duration);
   }
 
+  @UseGuards(AdminGuard)
   @Post("create-category")
   async createCategory(@Body() { category }: CategoryDto) {
     return this.questionService.createCategory(category);
   }
 
+  @UseGuards(AdminGuard)
   @Post("create-grade")
   async createGrade(@Body() { grade }: GradeDto) {
     return this.questionService.createGrade(grade);
   }
 
+  @UseGuards(UserGuard)
   @Get("configs")
   async configs(@Query("all") all: string) {
     const isActiveFilter = all === "true" ? {} : { isActive: true };
@@ -103,31 +111,37 @@ export class QuestionController {
     return { categories, durations, grades };
   }
 
+  @UseGuards(AdminGuard)
   @Get("activate-duration/:_id")
   async activateDuration(@IdParam() _id: string) {
     await this.questionService.setDurationStatus(_id, true);
   }
 
+  @UseGuards(AdminGuard)
   @Get("deactivate-duration/:_id")
   async deactivateDuration(@IdParam() _id: string) {
     await this.questionService.setDurationStatus(_id, false);
   }
 
+  @UseGuards(AdminGuard)
   @Get("activate-category/:_id")
   async activateCategory(@IdParam() _id: string) {
     await this.questionService.setCategoryStatus(_id, true);
   }
 
+  @UseGuards(AdminGuard)
   @Get("deactivate-category/:_id")
   async deactivateCategory(@IdParam() _id: string) {
     await this.questionService.setCategoryStatus(_id, false);
   }
 
+  @UseGuards(AdminGuard)
   @Get("activate-grade/:_id")
   async activateGrade(@IdParam() _id: string) {
     await this.questionService.setGradeStatus(_id, true);
   }
 
+  @UseGuards(AdminGuard)
   @Get("deactivate-grade/:_id")
   async deactivateGrade(@IdParam() _id: string) {
     await this.questionService.setGradeStatus(_id, false);

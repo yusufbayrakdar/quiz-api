@@ -3,7 +3,6 @@ import { QuestionService } from "./question.service";
 import { QuestionController } from "./question.controller";
 import { QuestionSchema } from "./models/question.schema";
 import { MongooseModule } from "@nestjs/mongoose";
-import { InstructorModule } from "src/instructor/instructor.module";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { HttpCacheInterceptor } from "src/shared/http-cache.interceptor";
 import { DurationSchema } from "./models/duration.schema";
@@ -32,7 +31,6 @@ import { SearchModule } from "src/search/search.module";
         schema: GradeSchema,
       },
     ]),
-    InstructorModule,
     SearchModule,
   ],
   controllers: [QuestionController],

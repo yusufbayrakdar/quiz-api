@@ -40,7 +40,7 @@ export const loggerMiddleware = morgan(
             .bold("| ⌛️ " + tokens["response-time"](req, res) + " ms"),
           chalk
             .hex("#f78fb3")
-            .bold("| 🕑 " + moment(tokens.date(req, res)).format())
+            .bold("| 🕑 " + moment(tokens.date(req, res)).format()),
         ].join(" ");
       }
 );

@@ -8,7 +8,7 @@ export const QuestionSchema = new mongoose.Schema(
     },
     creator: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Instructor",
+      ref: "User",
     },
     question: [
       {

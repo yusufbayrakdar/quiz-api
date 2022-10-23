@@ -1,14 +1,10 @@
 import { IsNotEmpty, IsString, Length } from "class-validator";
 import { IsPhone } from "src/utilities/decorators/phone.decorator";
 
-export class RegisterDto {
+export class RegisterDtoInstructor {
   @IsString()
   @IsNotEmpty()
-  firstName: string;
-
-  @IsString()
-  @IsNotEmpty()
-  lastName: string;
+  fullName: string;
 
   @IsPhone()
   phone: string;

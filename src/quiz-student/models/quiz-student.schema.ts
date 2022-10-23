@@ -1,14 +1,18 @@
 import * as mongoose from "mongoose";
 
-export const StudentInstructorSchema = new mongoose.Schema(
+export const QuizStudentSchema = new mongoose.Schema(
   {
-    student: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Student",
-    },
     instructor: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Instructor",
+      ref: "User",
+    },
+    student: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    quiz: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Quiz",
     },
     isActive: {
       type: Boolean,

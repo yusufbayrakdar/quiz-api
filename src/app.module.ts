@@ -5,18 +5,16 @@ import * as mongoosePaginate from "mongoose-paginate-v2";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
+import { ConfigModule } from "./config/config.module";
 import { QuestionModule } from "./question/question.module";
 import { QuizModule } from "./quiz/quiz.module";
 import { ShapeModule } from "./shape/shape.module";
-
-const database =
-  process.env.NODE_ENV === "production"
-    ? process.env.MONGO_URI
-    : process.env.MONGO_URI_DEV;
+import { UserModule } from "./user/user.module";
+import { ApiModule } from "./utilities/guards/Api.module";
 
 @Module({
   imports: [
-    MongooseModule.forRoot(database, {
+    MongooseModule.forRoot(process.env.MONGO_URI, {
       useNewUrlParser: true,
       autoIndex: false,
       useUnifiedTopology: true,
@@ -26,9 +24,12 @@ const database =
       },
     }),
     AuthModule,
+    UserModule,
     QuizModule,
     ShapeModule,
     QuestionModule,
+    ApiModule,
+    ConfigModule,
   ],
   controllers: [AppController],
   providers: [AppService],

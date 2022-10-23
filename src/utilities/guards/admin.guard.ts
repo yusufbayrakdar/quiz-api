@@ -1,10 +1,12 @@
 import { ExecutionContext, Injectable } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { verify } from "jsonwebtoken";
+
 import { ExceptionForbidden } from "../exceptions";
+import ROLES from "../roles";
 
 @Injectable()
-export class UserGuard extends AuthGuard("jwt") {
+export class AdminGuard extends AuthGuard("jwt") {
   constructor() {
     super();
   }
@@ -17,7 +19,7 @@ export class UserGuard extends AuthGuard("jwt") {
     if (token) {
       try {
         return verify(token, process.env.USER_SECRET_KEY, (error, user) => {
-          if (error) {
+          if (error || user.role !== ROLES.ADMIN) {
             throw new ExceptionForbidden(error);
           } else {
             return Object.assign(req, { user });

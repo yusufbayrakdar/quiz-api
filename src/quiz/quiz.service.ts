@@ -1,13 +1,17 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import paginationHelper from "src/utilities/helpers/pagination/pagination.helper";
 
+import { QuizStudent } from "src/quiz-student/entities/quiz-student.entity";
+import paginationHelper from "src/utilities/helpers/pagination/pagination.helper";
 import { Quiz } from "./entities/quiz.entity";
 
 @Injectable()
 export class QuizService {
-  constructor(@InjectModel("Quiz") private quizModel: Model<Quiz>) {}
+  constructor(
+    @InjectModel("Quiz") private quizModel: Model<Quiz>,
+    @InjectModel("QuizStudent") private quizStudentModel: Model<QuizStudent>
+  ) {}
 
   create(quiz) {
     return this.quizModel.findOneAndUpdate(
@@ -34,12 +38,8 @@ export class QuizService {
       .findById(_id)
       .populate([
         {
-          path: "assignedStudents",
-          select: "firstName lastName",
-        },
-        {
           path: "creator",
-          select: "firstName lastName",
+          select: "fullName",
         },
       ])
       .lean();
@@ -49,17 +49,20 @@ export class QuizService {
     return this.quizModel.find({ questionList: questionId }).distinct("_id");
   }
 
-  paginate(query) {
-    return paginationHelper({
+  async paginate(query, showStudentCount) {
+    await this.quizModel.updateMany({}, { $unset: { assignedStudents: "" } });
+
+    if (query.student) {
+      const assignedQuizzes = await this.quizStudentModel
+        .find({ student: query.student, isActive: true })
+        .distinct("quiz");
+      query._id = { $in: assignedQuizzes };
+    }
+
+    const result = await paginationHelper({
       Model: this.quizModel,
-      query: { ...query, isActive: true },
-      filterableFields: [
-        "_id",
-        "name",
-        "duration",
-        "creator",
-        "assignedStudents",
-      ],
+      query,
+      filterableFields: ["_id", "name", "duration", "creator"],
       searchableFields: ["name"],
       defaultLimit: 10,
       populate: [
@@ -83,17 +86,28 @@ export class QuizService {
         },
         {
           path: "creator",
-          select: "firstName lastName",
+          select: "fullName",
         },
       ],
     });
+
+    if (showStudentCount) {
+      for (let i = 0; i < result.docs.length; i++) {
+        const quiz = result.docs[i];
+        quiz.studentCount = await this.quizStudentModel.count({
+          quiz: quiz._id,
+          isActive: true,
+        });
+      }
+    }
+
+    return result;
   }
 
-  findByStudentId(studentId: string) {
-    return this.quizModel.find({ assignedStudents: studentId }).lean();
-  }
-
-  delete(query: { _id: string; creator: string }) {
-    return this.quizModel.findOneAndDelete(query);
+  delete({ _id, creator }: { _id: string; creator: string }) {
+    return this.quizStudentModel.updateMany(
+      { student: _id, instructor: creator },
+      { isActive: false }
+    );
   }
 }

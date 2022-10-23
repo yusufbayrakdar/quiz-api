@@ -4,7 +4,6 @@ import { APP_INTERCEPTOR } from "@nestjs/core";
 
 import { ScoreService } from "./score.service";
 import { ScoreSchema } from "./models/score.schema";
-import { InstructorModule } from "src/instructor/instructor.module";
 import { HttpCacheInterceptor } from "src/shared/http-cache.interceptor";
 import { SearchModule } from "src/search/search.module";
 import { ScoreController } from "./score.controller";
@@ -18,7 +17,6 @@ import { ScoreController } from "./score.controller";
         schema: ScoreSchema,
       },
     ]),
-    InstructorModule,
     forwardRef(() => SearchModule),
     forwardRef(() => ScoreModule),
   ],

@@ -8,7 +8,7 @@ export const SearchSchema = new mongoose.Schema(
     creatorName: String,
     creatorId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Instructor",
+      ref: "User",
     },
     question: Object,
     choices: Object,

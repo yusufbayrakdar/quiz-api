@@ -6,10 +6,12 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from "@nestjs/common";
 import { IdParam } from "src/utilities/decorators/paramId.decorator";
 
 import { IMAGE_ALREADY_EXIST } from "src/utilities/errors";
+import { AdminGuard } from "src/utilities/guards/admin.guard";
 import { PaginationQueryDto } from "src/utilities/helpers/pagination/pagination.validation";
 import { CreateShapeDto } from "./dto/create-shape.dto";
 import { ShapeService } from "./shape.service";
@@ -27,6 +29,7 @@ export class ShapeController {
     return await this.shapeService.detail(_id);
   }
 
+  @UseGuards(AdminGuard)
   @Post()
   async create(@Body() createShapeDto: CreateShapeDto) {
     const imageExists = await this.shapeService.exists({
@@ -37,6 +40,7 @@ export class ShapeController {
     return this.shapeService.findOneAndUpdate(createShapeDto);
   }
 
+  @UseGuards(AdminGuard)
   @Put()
   async update(@Body() createShapeDto: CreateShapeDto) {
     const { _id } = createShapeDto;

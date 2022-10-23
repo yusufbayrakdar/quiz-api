@@ -44,9 +44,9 @@ export class QuestionService {
           select: "category",
         },
         {
-          model: "Instructor",
+          model: "User",
           path: "creator",
-          select: "firstName lastName phone",
+          select: "fullName phone",
         },
         {
           model: "Duration",
@@ -68,7 +68,7 @@ export class QuestionService {
             category: question.category.category,
             duration: question.duration.duration,
             grade: question.grade.grade,
-            creatorName: `${question.creator.firstName} ${question.creator.lastName}`,
+            creatorName: question.creator.fullName,
             creatorId: question.creator._id,
           });
           return acc;

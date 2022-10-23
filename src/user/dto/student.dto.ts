@@ -3,15 +3,11 @@ import { IsPhone } from "src/utilities/decorators/phone.decorator";
 
 export class StudentDto {
   @IsString()
-  @Length(3, 20)
-  firstName: string;
+  @Length(4, 32)
+  fullName: string;
 
   @IsString()
-  @Length(2, 20)
-  lastName: string;
-
-  @IsString()
-  @Length(3, 20)
+  @Length(4, 32)
   nickname: string;
 
   @IsOptional()

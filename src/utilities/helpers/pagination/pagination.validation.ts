@@ -11,7 +11,10 @@ import {
   Min,
   IsMongoId,
   IsNumberString,
+  IsNotEmpty,
 } from "class-validator";
+
+import ROLES from "src/utilities/roles";
 
 export class PaginationQueryDto {
   @IsOptional()
@@ -48,7 +51,7 @@ export class PaginationQueryDto {
 
   @IsOptional()
   @IsString()
-  firstName: string;
+  fullName: string;
 
   @IsOptional()
   @IsBooleanString()
@@ -57,6 +60,10 @@ export class PaginationQueryDto {
   @IsOptional()
   @IsBooleanString()
   hasPhone: boolean;
+
+  @IsOptional()
+  @IsBooleanString()
+  isOwner: string;
 
   @IsOptional()
   @IsBooleanString()
@@ -89,8 +96,9 @@ export class PaginationQueryDto {
   results: boolean;
 
   @IsOptional()
-  @IsMongoId()
-  assignedStudents: string;
+  @IsString()
+  @IsNotEmpty()
+  role: ROLES;
 }
 
 export class Pagination {

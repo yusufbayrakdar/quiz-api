@@ -1,6 +1,5 @@
 import { CacheModule, forwardRef, Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { InstructorModule } from "src/instructor/instructor.module";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { HttpCacheInterceptor } from "src/shared/http-cache.interceptor";
 import { SearchSchema } from "./models/search.schema";
@@ -18,7 +17,6 @@ import { QuizModule } from "src/quiz/quiz.module";
         schema: SearchSchema,
       },
     ]),
-    InstructorModule,
     forwardRef(() => QuestionModule),
     forwardRef(() => QuizModule),
   ],

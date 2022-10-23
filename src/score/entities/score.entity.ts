@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
 import { QuizSelects } from "src/quiz/entities/quiz.entity";
-import { StudentSelects } from "src/student/entities/student.entity";
+import { UserSelects } from "src/user/entities/user.entity";
 
 export class Score extends Document {
   student: string;
@@ -17,7 +17,7 @@ export const ScoreSelects = {
 export const ScorePopulates = [
   {
     path: "student",
-    select: StudentSelects.basic,
+    select: UserSelects.STUDENT.basic,
   },
   {
     path: "quiz",

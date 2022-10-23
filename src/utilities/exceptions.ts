@@ -1,31 +1,38 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
+import {
+  ALREADY_EXIST,
+  BAD_REQUEST,
+  FAILED_LOGIN,
+  NOT_FOUND,
+  UNAUTHORIZED_REQUEST,
+} from "./errors";
 
 export class ExceptionForbidden extends HttpException {
-  constructor(message = "Forbidden") {
+  constructor(message = UNAUTHORIZED_REQUEST) {
     super(message, HttpStatus.FORBIDDEN);
   }
 }
 
 export class ExceptionUnauthorized extends HttpException {
-  constructor(message = "Invalid credentials") {
+  constructor(message = FAILED_LOGIN) {
     super(message, HttpStatus.UNAUTHORIZED);
   }
 }
 
 export class ExceptionBadRequest extends HttpException {
-  constructor(message = "Bad Request") {
+  constructor(message = BAD_REQUEST) {
     super(message, HttpStatus.BAD_REQUEST);
   }
 }
 
 export class ExceptionAlreadyExist extends HttpException {
-  constructor(message = "Already exists") {
+  constructor(message = ALREADY_EXIST) {
     super(message, HttpStatus.BAD_REQUEST);
   }
 }
 
 export class ExceptionNotFound extends HttpException {
-  constructor() {
-    super("Data not found", HttpStatus.NOT_FOUND);
+  constructor(message = NOT_FOUND) {
+    super(message, HttpStatus.NOT_FOUND);
   }
 }
