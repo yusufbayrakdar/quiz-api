@@ -116,7 +116,8 @@ export class QuizService {
     return result;
   }
 
-  delete(quiz: string) {
-    return this.quizStudentModel.find({ quiz }, { isActive: false });
+  async delete(quiz: string) {
+    await this.quizModel.findByIdAndDelete(quiz);
+    return this.quizStudentModel.updateMany({ quiz }, { isActive: false });
   }
 }
