@@ -33,6 +33,18 @@ export class QuizService {
     });
   }
 
+  findByIdAndUpdate(_id, payload) {
+    return this.quizModel.findByIdAndUpdate(_id, payload, {
+      upsert: true,
+      setDefaultsOnInsert: true,
+      runValidators: true,
+    });
+  }
+
+  exist(filter) {
+    return this.quizModel.exists(filter);
+  }
+
   detail(_id) {
     return this.quizModel
       .findById(_id)
@@ -104,10 +116,7 @@ export class QuizService {
     return result;
   }
 
-  delete({ _id, creator }: { _id: string; creator: string }) {
-    return this.quizStudentModel.updateMany(
-      { student: _id, instructor: creator },
-      { isActive: false }
-    );
+  delete(quiz: string) {
+    return this.quizStudentModel.find({ quiz }, { isActive: false });
   }
 }

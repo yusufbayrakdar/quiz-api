@@ -27,11 +27,15 @@ export class AuthController {
 
   @Post("login")
   async loginInstructor(@Body() loginDto: LoginDto) {
-    const user = await this.userService.findByLogin(loginDto);
+    try {
+      const user = await this.userService.findByLogin(loginDto);
 
-    if (user) {
-      const token = this.authService.generateUserToken(user);
-      return { user, token };
-    } else throw new ExceptionBadRequest(FAILED_LOGIN);
+      if (user) {
+        const token = this.authService.generateUserToken(user);
+        return { user, token };
+      } else throw new ExceptionBadRequest(FAILED_LOGIN);
+    } catch (error) {
+      throw new ExceptionBadRequest(FAILED_LOGIN);
+    }
   }
 }

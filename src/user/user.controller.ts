@@ -18,12 +18,12 @@ import { User } from "src/utilities/decorators/user.decorator";
 import {
   SOMETHING_WENT_WRONG,
   STUDENT_ALREADY_EXIST,
-  UNAUTHORIZED_REQUEST,
   USER_ALREADY_EXIST,
 } from "src/utilities/errors";
 import {
   ExceptionAlreadyExist,
   ExceptionBadRequest,
+  ExceptionForbidden,
 } from "src/utilities/exceptions";
 import { AdminGuard } from "src/utilities/guards/admin.guard";
 import { InstructorGuard } from "src/utilities/guards/instructor.guard";
@@ -268,9 +268,7 @@ export class UserController {
           studentId
         );
 
-      if (!isInstructorAuthorized) {
-        throw new ExceptionBadRequest(UNAUTHORIZED_REQUEST);
-      }
+      if (!isInstructorAuthorized) throw new ExceptionForbidden();
 
       await this.userService.delete(studentId, instructorId);
 
@@ -304,9 +302,7 @@ export class UserController {
         studentDto._id
       );
 
-    if (!isInstructorAuthorized) {
-      throw new ExceptionBadRequest(UNAUTHORIZED_REQUEST);
-    }
+    if (!isInstructorAuthorized) throw new ExceptionForbidden();
 
     const foundStudent = await this.userService.findOneByNickName(
       studentDto.nickname,

@@ -24,6 +24,10 @@ export class QuestionService {
     return this.questionModel.findById(id);
   }
 
+  exist(filter) {
+    return this.questionModel.exists(filter);
+  }
+
   getPopulatedQuestions(filter: object = {}) {
     return this.questionModel
       .find(filter)
@@ -85,10 +89,6 @@ export class QuestionService {
     );
   }
 
-  update(filter: object, update: object) {
-    return this.questionModel.findOneAndUpdate(filter, update);
-  }
-
   delete(question) {
     return this.questionModel.findByIdAndDelete(question);
   }
@@ -136,6 +136,10 @@ export class QuestionService {
       .find(query)
       .select("isActive grade")
       .sort({ grade: 1 });
+  }
+
+  findByIdAndUpdate(_id: string, filter) {
+    return this.questionModel.findByIdAndUpdate(_id, filter);
   }
 
   setDurationStatus(_id: string, isActive: boolean) {

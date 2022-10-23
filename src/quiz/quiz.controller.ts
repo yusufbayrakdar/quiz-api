@@ -14,7 +14,10 @@ import { SearchService } from "src/search/search.service";
 import { IdParam } from "src/utilities/decorators/paramId.decorator";
 import { User } from "src/utilities/decorators/user.decorator";
 import { QUIZ_NOT_FOUND, SOMETHING_WENT_WRONG } from "src/utilities/errors";
-import { ExceptionBadRequest } from "src/utilities/exceptions";
+import {
+  ExceptionBadRequest,
+  ExceptionForbidden,
+} from "src/utilities/exceptions";
 import { UserGuard } from "src/utilities/guards/user.guard";
 import { PaginationQueryDto } from "src/utilities/helpers/pagination/pagination.validation";
 import { QuizDto } from "./dto/quiz.dto";
@@ -120,11 +123,18 @@ export class QuizController {
 
   @UseGuards(InstructorGuard)
   @Delete(":_id")
-  async delete(@IdParam() _id: string, @User("_id") creator: string) {
+  async delete(@IdParam() _id: string, @User() editor) {
     try {
-      await this.quizService.delete({ _id, creator });
+      const isCreator = await this.quizService.exist({
+        _id,
+        creator: editor._id,
+      });
+      const isAdmin = editor.role === ROLES.ADMIN;
+      if (!isCreator && !isAdmin) throw new ExceptionForbidden();
+
+      await this.quizService.delete(_id);
     } catch (error) {
-      throw new ExceptionBadRequest(SOMETHING_WENT_WRONG);
+      throw new ExceptionForbidden();
     }
   }
 
@@ -182,13 +192,18 @@ export class QuizController {
 
   @UseGuards(InstructorGuard)
   @Put()
-  async update(@Body() quiz: UpdateQuizDto, @User("_id") creator: string) {
-    const filter = { _id: quiz._id, creator };
-    const payload = { ...quiz };
-    delete payload._id;
-    const createdQuiz: any = await this.quizService.findOneAndUpdate(
-      filter,
-      payload
+  async update(@Body() quiz: UpdateQuizDto, @User() editor) {
+    const { _id, ...update } = quiz;
+    const isCreator = await this.quizService.exist({
+      _id,
+      creator: editor._id,
+    });
+    const isAdmin = editor.role === ROLES.ADMIN;
+    if (!isCreator && !isAdmin) throw new ExceptionForbidden();
+
+    const createdQuiz: any = await this.quizService.findByIdAndUpdate(
+      _id,
+      update
     );
 
     return this.searchService.syncSearches({

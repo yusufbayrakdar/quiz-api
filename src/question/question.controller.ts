@@ -29,6 +29,7 @@ import {
 } from "src/utilities/errors";
 import { InstructorGuard } from "src/utilities/guards/instructor.guard";
 import { AdminGuard } from "src/utilities/guards/admin.guard";
+import ROLES from "src/utilities/roles";
 
 @Controller("questions")
 export class QuestionController {
@@ -59,24 +60,32 @@ export class QuestionController {
 
   @UseGuards(InstructorGuard)
   @Put()
-  async update(
-    @Body() question: UpdateQuestionDto,
-    @User("_id") creator: string
-  ) {
+  async update(@Body() question: UpdateQuestionDto, @User() editor) {
     const { _id, ...update } = question;
-    const questionCurrentState = await this.questionService.findById(_id);
-    if (String(questionCurrentState.creator) !== creator) {
+    const isCreator = await this.questionService.exist({
+      _id,
+      creator: editor._id,
+    });
+    const isAdmin = editor.role === ROLES.ADMIN;
+    if (!isCreator && !isAdmin) {
       throw new ExceptionForbidden(UNAUTHORIZED_QUESTION_EDIT);
     }
-    this.checkShapesForm(question);
 
-    await this.questionService.update({ _id, creator }, update);
-    return this.searchService.syncSearches({ _id: question._id });
+    this.checkShapesForm(question);
+    await this.questionService.findByIdAndUpdate(_id, update);
+    return this.searchService.syncSearches({ _id });
   }
 
   @UseGuards(InstructorGuard)
   @Delete(":_id")
-  async delete(@IdParam() _id: string) {
+  async delete(@IdParam() _id: string, @User() deletor) {
+    const isCreator = await this.questionService.exist({
+      _id,
+      creator: deletor._id,
+    });
+    const isAdmin = deletor.role === ROLES.ADMIN;
+    if (!isCreator && !isAdmin) throw new ExceptionForbidden();
+
     await this.questionService.delete(_id);
     await this.searchService.delete(_id);
   }
